@@ -1,0 +1,1409 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Adjusted Rand Index (ARI) &#8212; ML book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/proof.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'unsupervised_learning/aslan';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../README.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="ML book - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="ML book - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../README.html">
+                    ML book
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction to ML</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../intro/intro_to_ML.html">Overview</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../intro/definition.html">Definitions of ML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../intro/applications.html">Applications of ML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../intro/data.html">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../intro/ml_types.html">Types of ML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../intro/knn.html">k-Nearest Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../intro/model_selection.html">Model selection</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../lin_reg/linear_regression.html">Linear regression</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../lin_reg/simple.html">Simple linear regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lin_reg/polynomial.html">Polynomial regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lin_reg/multiple.html">Multiple linear regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lin_reg/regularization.html">Regularization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lin_reg/numeric_opt.html">Numeric optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lin_reg/general.html">General linear model</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linear_classification/classification.html">Linear classification</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linear_classification/log_reg.html">Logistic regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linear_classification/multi_log_reg.html">Multinomial logistic regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linear_classification/num_opt_log_reg.html">Numeric optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linear_classification/svm.html">Support Vector Machines (SVM)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../eval_metrics/metrics.html">Evaluation Metrics</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../eval_metrics/classification.html">Classification Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../eval_metrics/ROC-AUC.html">ROC-AUC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../eval_metrics/regression.html">Regression metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../eval_metrics/cross_val.html">Cross-validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../eval_metrics/hyperparameters.html">Hyperparameters tuning</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../probabilistic_models/probabilistic.html">Probabilistic models</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../probabilistic_models/bayesian_inference.html">Bayesian inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../probabilistic_models/lin_reg_prob.html">Probabilistic models for linear regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../probabilistic_models/log_reg_prob.html">Probabilistic models for logistic regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../probabilistic_models/LDA.html">Linear Discriminant Analysis (QDA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../probabilistic_models/QDA.html">Quadratic Discriminant Analysis (QDA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../probabilistic_models/naive_bayes.html">Naive Bayes classifier</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../decision_trees/decision_tree.html">Decision Trees</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../decision_trees/classification.html">Classification tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../decision_trees/regression.html">Regression tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../decision_trees/impurity.html">Impurity and information criterions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../decision_trees/pruning.html">Tree pruning</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ensembling/ensemble.html">Ensembling</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ensembling/bias_variance.html">Bias-variance decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ensembling/voting_stacking_blending.html">Voting, stacking and blending</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ensembling/bagging.html">Bagging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ensembling/random_forest.html">Random forests</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../gradient_boosting/gradient_boosting.html">Gradient boosting</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gradient_boosting/boosting.html">Boosting and additive modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gradient_boosting/generic_gb.html">Generic gradient boosting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gradient_boosting/adaboost.html">AdaBoost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gradient_boosting/xgboost.html">XGBoost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gradient_boosting/catboost.html">CatBoost</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="unsupervised.html">Unsupervised Learning</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="pca.html">Principal components analysis (PCA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clustering_metrics.html">Clustering metrics</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="k_means.html">K-means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hierarchic_clustering.html">Hierarchical Clustering</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mlp/mlp.html">Multilayer perceptron (MLP)</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../mlp/layers.html">Layers of MLP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mlp/forward_backward_pass.html">Forward and backward pass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mlp/activations.html">Activation functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mlp/backprop.html">Back propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mlp/weight_init.html">Weights initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mlp/regularization.html">Regularization in MLP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mlp/optimization_dl.html">Optimization in DL</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../cnn/cnn.html">CNN</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cnn/convolutions_2d.html">Convolution of matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cnn/convolutions_3d.html">Convolutions of tensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cnn/pooling.html">Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cnn/back_prop.html">Back propagation in CNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cnn/augmentation.html">Data augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cnn/architectures.html">Architectures of CNN</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rnn/sequential.html">Sequential NNs</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rnn/vanilla_rnn.html">Vanilla RNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rnn/lstm.html">LSTM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rnn/gru.html">GRU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rnn/attention.html">Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rnn/transformers.html">Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../gm/generative.html">Generative models</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gm/autoencoders.html">Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gm/vae.html">Variational autoencoders (VAE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gm/gan.html">Ganerative adversarial networks (GAN)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rl/RL.html">Reinforcement Learning</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rl/basics.html">RL basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rl/multiarmed_bandits.html">Multiarmed bandits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rl/mdp.html">Markov decision process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rl/q_learning.html">Q-learning</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Python for ML</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../python/python_basics.html">Python Basics</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../python/basics/basic_types.html">Basic Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python/basics/variables.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python/basics/control_flow.html">Control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python/basics/functions_strings.html">Functions</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../python/basics/classes.html">Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python/basics/ISLP_lab.html">ISLP Lab</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../python/numpy.html">NumPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/pandas.html">Pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/visual.html">Data visualization</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Math for ML</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../math/linear_algebra.html">Linear Algebra</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../math/lin_alg/vectors.html">Vectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/lin_alg/matrices.html">Matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/lin_alg/linear_systems.html">Linear systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/lin_alg/inverse.html">Inverse matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/lin_alg/rank.html">Rank of a matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/lin_alg/orthogonality.html">Orthogonality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/lin_alg/projections.html">Orthogonal projections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/lin_alg/determinant.html">Determinants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/lin_alg/eig.html">Eigenvalues and eigenvectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/lin_alg/diagonalize.html">Diagonalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/lin_alg/matrix_norms.html">Matrix norms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/lin_alg/SVD.html">Singular Value Decomposition (SVD)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../math/calculus.html">Calculus</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../math/calculus/1-d.html">1-d calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/calculus/multivariate.html">Multivariate calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/calculus/matrix_diff.html">Matrix calculus</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../math/probability.html">Probability</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../math/proba/entropy.html">Entropy</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../math/statistics.html">Statistics</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../math/stats/MLE.html">Maximum likelihood estimation (MLE)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../math/optimization.html">Optimization</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../math/optimization/GD.html">Gradient descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/optimization/SGD.html">Stochastic gradient descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../math/optimization/newton.html">Newton’s method</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notation.html">Notation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">ML resources</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/unsupervised_learning/aslan.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Adjusted Rand Index (ARI)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-digits-dataset">Example: Digits Dataset</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="adjusted-rand-index-ari">
+<h1>Adjusted Rand Index (ARI)<a class="headerlink" href="#adjusted-rand-index-ari" title="Permalink to this heading">#</a></h1>
+<p>The Adjusted Rand Index (ARI) is a measure used in clustering and classification tasks to assess the similarity between two data partitions, taking into account chance agreement. It is an adjustment of the Rand Index and provides a normalized score that considers random clustering.</p>
+<p>The formula for Adjusted Rand Index is expressed as follows:</p>
+<div class="math notranslate nohighlight">
+\[
+ARI = \frac{\text{RI} - \text{Expected}}{\text{Max} - \text{Expected}}
+\]</div>
+<div class="tip dropdown admonition">
+<p class="admonition-title">Explanation!</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\text{RI} &amp; = \text{Rand Index} \\
+\text{Expected} &amp; = \text{Expected Rand Index under independence} \\
+\text{Max} &amp; = \text{Maximum possible Rand Index}
+\end{aligned}
+\end{split}\]</div>
+</div>
+<p>The Rand Index is calculated using the formula:</p>
+<div class="math notranslate nohighlight">
+\[
+RI = \frac{a + b}{a + b + c + d}
+\]</div>
+<div class="tip dropdown admonition">
+<p class="admonition-title">Explanation!</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+a &amp; = \text{Number of pairs of elements that are in the same cluster in both partitions} \\
+b &amp; = \text{Number of pairs of elements that are in different clusters in both partitions} \\
+c &amp; = \text{Number of pairs of elements that are in the same cluster in the first partition and in different clusters in the second partition} \\
+d &amp; = \text{Number of pairs of elements that are in different clusters in the first partition and in the same cluster in the second partition}
+\end{aligned}
+\end{split}\]</div>
+</div>
+<section id="example-digits-dataset">
+<h2>Example: Digits Dataset<a class="headerlink" href="#example-digits-dataset" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Hide this cell
+%%capture
+import warnings
+warnings.filterwarnings(&#39;ignore&#39;)
+!pip install matplotlib
+%pip install scikit-learn
+%pip install ipywidgets
+import warnings
+warnings.filterwarnings(&#39;ignore&#39;)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>UsageError: Line magic function `%%capture` not found.
+</pre></div>
+</div>
+</div>
+</div>
+<p>Dataset looks like:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span>
+<span class="c1"># Load the digits dataset</span>
+<span class="n">digits</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_digits</span><span class="p">()</span>
+
+<span class="c1"># Display a few images and their labels</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>  <span class="c1"># Corrected loop range</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">i</span> <span class="o">//</span> <span class="mi">5</span><span class="p">,</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">gray_r</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">i</span> <span class="o">//</span> <span class="mi">5</span><span class="p">,</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Label: </span><span class="si">{</span><span class="n">digits</span><span class="o">.</span><span class="n">target</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="n">i</span> <span class="o">//</span> <span class="mi">5</span><span class="p">,</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/47a3123a11f868c0dc65f9c6b5e8fcc2e606521ff9d40ad9456c1fb07030793b.png" src="../_images/47a3123a11f868c0dc65f9c6b5e8fcc2e606521ff9d40ad9456c1fb07030793b.png" />
+</div>
+</div>
+<p>Assume we are using KMeans clustering algorithm with 10 clusters (digits 0-9):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Calculate Adjusted Rand Index:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ari_score</span> <span class="o">=</span> <span class="n">adjusted_rand_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Hide this cell
+%%capture
+!pip install bokeh
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>UsageError: Line magic function `%%capture` not found.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Hide this cell</span>
+<span class="kn">from</span> <span class="nn">bokeh.plotting</span> <span class="kn">import</span> <span class="n">figure</span><span class="p">,</span> <span class="n">show</span><span class="p">,</span> <span class="n">output_notebook</span>
+<span class="n">output_notebook</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">    <style>
+        .bk-notebook-logo {
+            display: block;
+            width: 20px;
+            height: 20px;
+            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNui8sowAAAOkSURBVDiNjZRtaJVlGMd/1/08zzln5zjP1LWcU9N0NkN8m2CYjpgQYQXqSs0I84OLIC0hkEKoPtiH3gmKoiJDU7QpLgoLjLIQCpEsNJ1vqUOdO7ppbuec5+V+rj4ctwzd8IIbbi6u+8f1539dt3A78eXC7QizUF7gyV1fD1Yqg4JWz84yffhm0qkFqBogB9rM8tZdtwVsPUhWhGcFJngGeWrPzHm5oaMmkfEg1usvLFyc8jLRqDOMru7AyC8saQr7GG7f5fvDeH7Ej8CM66nIF+8yngt6HWaKh7k49Soy9nXurCi1o3qUbS3zWfrYeQDTB/Qj6kX6Ybhw4B+bOYoLKCC9H3Nu/leUTZ1JdRWkkn2ldcCamzrcf47KKXdAJllSlxAOkRgyHsGC/zRday5Qld9DyoM4/q/rUoy/CXh3jzOu3bHUVZeU+DEn8FInkPBFlu3+nW3Nw0mk6vCDiWg8CeJaxEwuHS3+z5RgY+YBR6V1Z1nxSOfoaPa4LASWxxdNp+VWTk7+4vzaou8v8PN+xo+KY2xsw6une2frhw05CTYOmQvsEhjhWjn0bmXPjpE1+kplmmkP3suftwTubK9Vq22qKmrBhpY4jvd5afdRA3wGjFAgcnTK2s4hY0/GPNIb0nErGMCRxWOOX64Z8RAC4oCXdklmEvcL8o0BfkNK4lUg9HTl+oPlQxdNo3Mg4Nv175e/1LDGzZen30MEjRUtmXSfiTVu1kK8W4txyV6BMKlbgk3lMwYCiusNy9fVfvvwMxv8Ynl6vxoByANLTWplvuj/nF9m2+PDtt1eiHPBr1oIfhCChQMBw6Aw0UulqTKZdfVvfG7VcfIqLG9bcldL/+pdWTLxLUy8Qq38heUIjh4XlzZxzQm19lLFlr8vdQ97rjZVOLf8nclzckbcD4wxXMidpX30sFd37Fv/GtwwhzhxGVAprjbg0gCAEeIgwCZyTV2Z1REEW8O4py0wsjeloKoMr6iCY6dP92H6Vw/oTyICIthibxjm/DfN9lVz8IqtqKYLUXfoKVMVQVVJOElGjrnnUt9T9wbgp8AyYKaGlqingHZU/uG2NTZSVqwHQTWkx9hxjkpWDaCg6Ckj5qebgBVbT3V3NNXMSiWSDdGV3hrtzla7J+duwPOToIg42ChPQOQjspnSlp1V+Gjdged7+8UN5CRAV7a5EdFNwCjEaBR27b3W890TE7g24NAP/mMDXRWrGoFPQI9ls/MWO2dWFAar/xcOIImbbpA3zgAAAABJRU5ErkJggg==);
+        }
+    </style>
+    <div>
+        <a href="https://bokeh.org" target="_blank" class="bk-notebook-logo"></a>
+        <span id="d2883863-9298-4350-893d-d797d499baa1">Loading BokehJS ...</span>
+    </div>
+</div><script type="application/javascript">(function(root) {
+  function now() {
+    return new Date();
+  }
+
+  const force = true;
+
+  if (typeof root._bokeh_onload_callbacks === "undefined" || force === true) {
+    root._bokeh_onload_callbacks = [];
+    root._bokeh_is_loading = undefined;
+  }
+
+const JS_MIME_TYPE = 'application/javascript';
+  const HTML_MIME_TYPE = 'text/html';
+  const EXEC_MIME_TYPE = 'application/vnd.bokehjs_exec.v0+json';
+  const CLASS_NAME = 'output_bokeh rendered_html';
+
+  /**
+   * Render data to the DOM node
+   */
+  function render(props, node) {
+    const script = document.createElement("script");
+    node.appendChild(script);
+  }
+
+  /**
+   * Handle when an output is cleared or removed
+   */
+  function handleClearOutput(event, handle) {
+    function drop(id) {
+      const view = Bokeh.index.get_by_id(id)
+      if (view != null) {
+        view.model.document.clear()
+        Bokeh.index.delete(view)
+      }
+    }
+
+    const cell = handle.cell;
+
+    const id = cell.output_area._bokeh_element_id;
+    const server_id = cell.output_area._bokeh_server_id;
+
+    // Clean up Bokeh references
+    if (id != null) {
+      drop(id)
+    }
+
+    if (server_id !== undefined) {
+      // Clean up Bokeh references
+      const cmd_clean = "from bokeh.io.state import curstate; print(curstate().uuid_to_server['" + server_id + "'].get_sessions()[0].document.roots[0]._id)";
+      cell.notebook.kernel.execute(cmd_clean, {
+        iopub: {
+          output: function(msg) {
+            const id = msg.content.text.trim()
+            drop(id)
+          }
+        }
+      });
+      // Destroy server and session
+      const cmd_destroy = "import bokeh.io.notebook as ion; ion.destroy_server('" + server_id + "')";
+      cell.notebook.kernel.execute(cmd_destroy);
+    }
+  }
+
+  /**
+   * Handle when a new output is added
+   */
+  function handleAddOutput(event, handle) {
+    const output_area = handle.output_area;
+    const output = handle.output;
+
+    // limit handleAddOutput to display_data with EXEC_MIME_TYPE content only
+    if ((output.output_type != "display_data") || (!Object.prototype.hasOwnProperty.call(output.data, EXEC_MIME_TYPE))) {
+      return
+    }
+
+    const toinsert = output_area.element.find("." + CLASS_NAME.split(' ')[0]);
+
+    if (output.metadata[EXEC_MIME_TYPE]["id"] !== undefined) {
+      toinsert[toinsert.length - 1].firstChild.textContent = output.data[JS_MIME_TYPE];
+      // store reference to embed id on output_area
+      output_area._bokeh_element_id = output.metadata[EXEC_MIME_TYPE]["id"];
+    }
+    if (output.metadata[EXEC_MIME_TYPE]["server_id"] !== undefined) {
+      const bk_div = document.createElement("div");
+      bk_div.innerHTML = output.data[HTML_MIME_TYPE];
+      const script_attrs = bk_div.children[0].attributes;
+      for (let i = 0; i < script_attrs.length; i++) {
+        toinsert[toinsert.length - 1].firstChild.setAttribute(script_attrs[i].name, script_attrs[i].value);
+        toinsert[toinsert.length - 1].firstChild.textContent = bk_div.children[0].textContent
+      }
+      // store reference to server id on output_area
+      output_area._bokeh_server_id = output.metadata[EXEC_MIME_TYPE]["server_id"];
+    }
+  }
+
+  function register_renderer(events, OutputArea) {
+
+    function append_mime(data, metadata, element) {
+      // create a DOM node to render to
+      const toinsert = this.create_output_subarea(
+        metadata,
+        CLASS_NAME,
+        EXEC_MIME_TYPE
+      );
+      this.keyboard_manager.register_events(toinsert);
+      // Render to node
+      const props = {data: data, metadata: metadata[EXEC_MIME_TYPE]};
+      render(props, toinsert[toinsert.length - 1]);
+      element.append(toinsert);
+      return toinsert
+    }
+
+    /* Handle when an output is cleared or removed */
+    events.on('clear_output.CodeCell', handleClearOutput);
+    events.on('delete.Cell', handleClearOutput);
+
+    /* Handle when a new output is added */
+    events.on('output_added.OutputArea', handleAddOutput);
+
+    /**
+     * Register the mime type and append_mime function with output_area
+     */
+    OutputArea.prototype.register_mime_type(EXEC_MIME_TYPE, append_mime, {
+      /* Is output safe? */
+      safe: true,
+      /* Index of renderer in `output_area.display_order` */
+      index: 0
+    });
+  }
+
+  // register the mime type if in Jupyter Notebook environment and previously unregistered
+  if (root.Jupyter !== undefined) {
+    const events = require('base/js/events');
+    const OutputArea = require('notebook/js/outputarea').OutputArea;
+
+    if (OutputArea.prototype.mime_types().indexOf(EXEC_MIME_TYPE) == -1) {
+      register_renderer(events, OutputArea);
+    }
+  }
+  if (typeof (root._bokeh_timeout) === "undefined" || force === true) {
+    root._bokeh_timeout = Date.now() + 5000;
+    root._bokeh_failed_load = false;
+  }
+
+  const NB_LOAD_WARNING = {'data': {'text/html':
+     "<div style='background-color: #fdd'>\n"+
+     "<p>\n"+
+     "BokehJS does not appear to have successfully loaded. If loading BokehJS from CDN, this \n"+
+     "may be due to a slow or bad network connection. Possible fixes:\n"+
+     "</p>\n"+
+     "<ul>\n"+
+     "<li>re-rerun `output_notebook()` to attempt to load from CDN again, or</li>\n"+
+     "<li>use INLINE resources instead, as so:</li>\n"+
+     "</ul>\n"+
+     "<code>\n"+
+     "from bokeh.resources import INLINE\n"+
+     "output_notebook(resources=INLINE)\n"+
+     "</code>\n"+
+     "</div>"}};
+
+  function display_loaded() {
+    const el = document.getElementById("d2883863-9298-4350-893d-d797d499baa1");
+    if (el != null) {
+      el.textContent = "BokehJS is loading...";
+    }
+    if (root.Bokeh !== undefined) {
+      if (el != null) {
+        el.textContent = "BokehJS " + root.Bokeh.version + " successfully loaded.";
+      }
+    } else if (Date.now() < root._bokeh_timeout) {
+      setTimeout(display_loaded, 100)
+    }
+  }
+
+  function run_callbacks() {
+    try {
+      root._bokeh_onload_callbacks.forEach(function(callback) {
+        if (callback != null)
+          callback();
+      });
+    } finally {
+      delete root._bokeh_onload_callbacks
+    }
+    console.debug("Bokeh: all callbacks have finished");
+  }
+
+  function load_libs(css_urls, js_urls, callback) {
+    if (css_urls == null) css_urls = [];
+    if (js_urls == null) js_urls = [];
+
+    root._bokeh_onload_callbacks.push(callback);
+    if (root._bokeh_is_loading > 0) {
+      console.debug("Bokeh: BokehJS is being loaded, scheduling callback at", now());
+      return null;
+    }
+    if (js_urls == null || js_urls.length === 0) {
+      run_callbacks();
+      return null;
+    }
+    console.debug("Bokeh: BokehJS not loaded, scheduling load and callback at", now());
+    root._bokeh_is_loading = css_urls.length + js_urls.length;
+
+    function on_load() {
+      root._bokeh_is_loading--;
+      if (root._bokeh_is_loading === 0) {
+        console.debug("Bokeh: all BokehJS libraries/stylesheets loaded");
+        run_callbacks()
+      }
+    }
+
+    function on_error(url) {
+      console.error("failed to load " + url);
+    }
+
+    for (let i = 0; i < css_urls.length; i++) {
+      const url = css_urls[i];
+      const element = document.createElement("link");
+      element.onload = on_load;
+      element.onerror = on_error.bind(null, url);
+      element.rel = "stylesheet";
+      element.type = "text/css";
+      element.href = url;
+      console.debug("Bokeh: injecting link tag for BokehJS stylesheet: ", url);
+      document.body.appendChild(element);
+    }
+
+    for (let i = 0; i < js_urls.length; i++) {
+      const url = js_urls[i];
+      const element = document.createElement('script');
+      element.onload = on_load;
+      element.onerror = on_error.bind(null, url);
+      element.async = false;
+      element.src = url;
+      console.debug("Bokeh: injecting script tag for BokehJS library: ", url);
+      document.head.appendChild(element);
+    }
+  };
+
+  function inject_raw_css(css) {
+    const element = document.createElement("style");
+    element.appendChild(document.createTextNode(css));
+    document.body.appendChild(element);
+  }
+
+  const js_urls = ["https://cdn.bokeh.org/bokeh/release/bokeh-3.3.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-gl-3.3.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.3.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.3.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-3.3.2.min.js"];
+  const css_urls = [];
+
+  const inline_js = [    function(Bokeh) {
+      Bokeh.set_log_level("info");
+    },
+function(Bokeh) {
+    }
+  ];
+
+  function run_inline_js() {
+    if (root.Bokeh !== undefined || force === true) {
+          for (let i = 0; i < inline_js.length; i++) {
+      inline_js[i].call(root, root.Bokeh);
+    }
+if (force === true) {
+        display_loaded();
+      }} else if (Date.now() < root._bokeh_timeout) {
+      setTimeout(run_inline_js, 100);
+    } else if (!root._bokeh_failed_load) {
+      console.log("Bokeh: BokehJS failed to load within specified timeout.");
+      root._bokeh_failed_load = true;
+    } else if (force !== true) {
+      const cell = $(document.getElementById("d2883863-9298-4350-893d-d797d499baa1")).parents('.cell').data().cell;
+      cell.output_area.append_execute_result(NB_LOAD_WARNING)
+    }
+  }
+
+  if (root._bokeh_is_loading === 0) {
+    console.debug("Bokeh: BokehJS loaded, going straight to plotting");
+    run_inline_js();
+  } else {
+    load_libs(css_urls, js_urls, function() {
+      console.debug("Bokeh: BokehJS plotting callback run at", now());
+      run_inline_js();
+    });
+  }
+}(window));</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
+<span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">adjusted_rand_score</span>
+<span class="kn">from</span> <span class="nn">bokeh.plotting</span> <span class="kn">import</span> <span class="n">figure</span><span class="p">,</span> <span class="n">show</span>
+<span class="kn">from</span> <span class="nn">bokeh.models</span> <span class="kn">import</span> <span class="n">ColumnDataSource</span><span class="p">,</span> <span class="n">HoverTool</span>
+<span class="kn">from</span> <span class="nn">bokeh.palettes</span> <span class="kn">import</span> <span class="n">Category10_10</span>
+<span class="kn">from</span> <span class="nn">bokeh.io</span> <span class="kn">import</span> <span class="n">output_notebook</span>
+
+<span class="c1"># Load the digits dataset</span>
+<span class="n">digits</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_digits</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">data</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">target</span>
+
+<span class="c1"># Reduce dimensionality for visualization (using PCA)</span>
+<span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">data_pca</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># Perform K-means clustering</span>
+<span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">clusters</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># Calculate Adjusted Rand Index (ARI)</span>
+<span class="n">ari</span> <span class="o">=</span> <span class="n">adjusted_rand_score</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">clusters</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adjusted Rand Index (ARI): </span><span class="si">{</span><span class="n">ari</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create a Bokeh figure</span>
+<span class="n">output_notebook</span><span class="p">()</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">figure</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Interactive Clustering of Digits Dataset</span><span class="se">\n</span><span class="s2">ARI: </span><span class="si">{</span><span class="n">ari</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+
+<span class="c1"># Map cluster labels to colors</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">Category10_10</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">clusters</span><span class="p">]</span>
+<span class="n">source</span> <span class="o">=</span> <span class="n">ColumnDataSource</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">data_pca</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">data_pca</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">digit</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">cluster</span><span class="o">=</span><span class="n">clusters</span><span class="p">))</span>
+
+<span class="c1"># Add glyphs to the plot</span>
+<span class="n">scatter</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">legend_field</span><span class="o">=</span><span class="s1">&#39;digit&#39;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span> <span class="n">fill_alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">line_alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+
+<span class="c1"># Customize plot aesthetics</span>
+<span class="n">p</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">text_font_size</span> <span class="o">=</span> <span class="s1">&#39;16pt&#39;</span>
+<span class="n">p</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Digit&#39;</span>
+<span class="n">p</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">label_text_font_size</span> <span class="o">=</span> <span class="s1">&#39;10pt&#39;</span>
+<span class="n">p</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">axis_label</span> <span class="o">=</span> <span class="s1">&#39;Principal Component 1&#39;</span>
+<span class="n">p</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">axis_label</span> <span class="o">=</span> <span class="s1">&#39;Principal Component 2&#39;</span>
+
+<span class="c1"># Add tooltips with images</span>
+<span class="n">hover</span> <span class="o">=</span> <span class="n">HoverTool</span><span class="p">()</span>
+<span class="n">hover</span><span class="o">.</span><span class="n">tooltips</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;Digit&quot;</span><span class="p">,</span> <span class="s2">&quot;@digit&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;Cluster&quot;</span><span class="p">,</span> <span class="s2">&quot;@cluster&quot;</span><span class="p">)]</span>
+<span class="n">hover</span><span class="o">.</span><span class="n">renderers</span> <span class="o">=</span> <span class="p">[</span><span class="n">scatter</span><span class="p">]</span>
+<span class="n">p</span><span class="o">.</span><span class="n">add_tools</span><span class="p">(</span><span class="n">hover</span><span class="p">)</span>
+
+<span class="c1"># Show the interactive plot</span>
+<span class="n">show</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/alibek_joldybayev/.pyenv/versions/3.10.12/lib/python3.10/site-packages/sklearn/cluster/_kmeans.py:1416: FutureWarning: The default value of `n_init` will change from 10 to &#39;auto&#39; in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  super()._check_params_vs_input(X, default_n_init=10)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Adjusted Rand Index (ARI): 0.6669121092859385
+</pre></div>
+</div>
+<div class="output text_html">    <style>
+        .bk-notebook-logo {
+            display: block;
+            width: 20px;
+            height: 20px;
+            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNui8sowAAAOkSURBVDiNjZRtaJVlGMd/1/08zzln5zjP1LWcU9N0NkN8m2CYjpgQYQXqSs0I84OLIC0hkEKoPtiH3gmKoiJDU7QpLgoLjLIQCpEsNJ1vqUOdO7ppbuec5+V+rj4ctwzd8IIbbi6u+8f1539dt3A78eXC7QizUF7gyV1fD1Yqg4JWz84yffhm0qkFqBogB9rM8tZdtwVsPUhWhGcFJngGeWrPzHm5oaMmkfEg1usvLFyc8jLRqDOMru7AyC8saQr7GG7f5fvDeH7Ej8CM66nIF+8yngt6HWaKh7k49Soy9nXurCi1o3qUbS3zWfrYeQDTB/Qj6kX6Ybhw4B+bOYoLKCC9H3Nu/leUTZ1JdRWkkn2ldcCamzrcf47KKXdAJllSlxAOkRgyHsGC/zRday5Qld9DyoM4/q/rUoy/CXh3jzOu3bHUVZeU+DEn8FInkPBFlu3+nW3Nw0mk6vCDiWg8CeJaxEwuHS3+z5RgY+YBR6V1Z1nxSOfoaPa4LASWxxdNp+VWTk7+4vzaou8v8PN+xo+KY2xsw6une2frhw05CTYOmQvsEhjhWjn0bmXPjpE1+kplmmkP3suftwTubK9Vq22qKmrBhpY4jvd5afdRA3wGjFAgcnTK2s4hY0/GPNIb0nErGMCRxWOOX64Z8RAC4oCXdklmEvcL8o0BfkNK4lUg9HTl+oPlQxdNo3Mg4Nv175e/1LDGzZen30MEjRUtmXSfiTVu1kK8W4txyV6BMKlbgk3lMwYCiusNy9fVfvvwMxv8Ynl6vxoByANLTWplvuj/nF9m2+PDtt1eiHPBr1oIfhCChQMBw6Aw0UulqTKZdfVvfG7VcfIqLG9bcldL/+pdWTLxLUy8Qq38heUIjh4XlzZxzQm19lLFlr8vdQ97rjZVOLf8nclzckbcD4wxXMidpX30sFd37Fv/GtwwhzhxGVAprjbg0gCAEeIgwCZyTV2Z1REEW8O4py0wsjeloKoMr6iCY6dP92H6Vw/oTyICIthibxjm/DfN9lVz8IqtqKYLUXfoKVMVQVVJOElGjrnnUt9T9wbgp8AyYKaGlqingHZU/uG2NTZSVqwHQTWkx9hxjkpWDaCg6Ckj5qebgBVbT3V3NNXMSiWSDdGV3hrtzla7J+duwPOToIg42ChPQOQjspnSlp1V+Gjdged7+8UN5CRAV7a5EdFNwCjEaBR27b3W890TE7g24NAP/mMDXRWrGoFPQI9ls/MWO2dWFAar/xcOIImbbpA3zgAAAABJRU5ErkJggg==);
+        }
+    </style>
+    <div>
+        <a href="https://bokeh.org" target="_blank" class="bk-notebook-logo"></a>
+        <span id="d31f6a0b-42ca-4b8e-b277-aa0100d77f61">Loading BokehJS ...</span>
+    </div>
+</div><script type="application/javascript">(function(root) {
+  function now() {
+    return new Date();
+  }
+
+  const force = true;
+
+  if (typeof root._bokeh_onload_callbacks === "undefined" || force === true) {
+    root._bokeh_onload_callbacks = [];
+    root._bokeh_is_loading = undefined;
+  }
+
+const JS_MIME_TYPE = 'application/javascript';
+  const HTML_MIME_TYPE = 'text/html';
+  const EXEC_MIME_TYPE = 'application/vnd.bokehjs_exec.v0+json';
+  const CLASS_NAME = 'output_bokeh rendered_html';
+
+  /**
+   * Render data to the DOM node
+   */
+  function render(props, node) {
+    const script = document.createElement("script");
+    node.appendChild(script);
+  }
+
+  /**
+   * Handle when an output is cleared or removed
+   */
+  function handleClearOutput(event, handle) {
+    function drop(id) {
+      const view = Bokeh.index.get_by_id(id)
+      if (view != null) {
+        view.model.document.clear()
+        Bokeh.index.delete(view)
+      }
+    }
+
+    const cell = handle.cell;
+
+    const id = cell.output_area._bokeh_element_id;
+    const server_id = cell.output_area._bokeh_server_id;
+
+    // Clean up Bokeh references
+    if (id != null) {
+      drop(id)
+    }
+
+    if (server_id !== undefined) {
+      // Clean up Bokeh references
+      const cmd_clean = "from bokeh.io.state import curstate; print(curstate().uuid_to_server['" + server_id + "'].get_sessions()[0].document.roots[0]._id)";
+      cell.notebook.kernel.execute(cmd_clean, {
+        iopub: {
+          output: function(msg) {
+            const id = msg.content.text.trim()
+            drop(id)
+          }
+        }
+      });
+      // Destroy server and session
+      const cmd_destroy = "import bokeh.io.notebook as ion; ion.destroy_server('" + server_id + "')";
+      cell.notebook.kernel.execute(cmd_destroy);
+    }
+  }
+
+  /**
+   * Handle when a new output is added
+   */
+  function handleAddOutput(event, handle) {
+    const output_area = handle.output_area;
+    const output = handle.output;
+
+    // limit handleAddOutput to display_data with EXEC_MIME_TYPE content only
+    if ((output.output_type != "display_data") || (!Object.prototype.hasOwnProperty.call(output.data, EXEC_MIME_TYPE))) {
+      return
+    }
+
+    const toinsert = output_area.element.find("." + CLASS_NAME.split(' ')[0]);
+
+    if (output.metadata[EXEC_MIME_TYPE]["id"] !== undefined) {
+      toinsert[toinsert.length - 1].firstChild.textContent = output.data[JS_MIME_TYPE];
+      // store reference to embed id on output_area
+      output_area._bokeh_element_id = output.metadata[EXEC_MIME_TYPE]["id"];
+    }
+    if (output.metadata[EXEC_MIME_TYPE]["server_id"] !== undefined) {
+      const bk_div = document.createElement("div");
+      bk_div.innerHTML = output.data[HTML_MIME_TYPE];
+      const script_attrs = bk_div.children[0].attributes;
+      for (let i = 0; i < script_attrs.length; i++) {
+        toinsert[toinsert.length - 1].firstChild.setAttribute(script_attrs[i].name, script_attrs[i].value);
+        toinsert[toinsert.length - 1].firstChild.textContent = bk_div.children[0].textContent
+      }
+      // store reference to server id on output_area
+      output_area._bokeh_server_id = output.metadata[EXEC_MIME_TYPE]["server_id"];
+    }
+  }
+
+  function register_renderer(events, OutputArea) {
+
+    function append_mime(data, metadata, element) {
+      // create a DOM node to render to
+      const toinsert = this.create_output_subarea(
+        metadata,
+        CLASS_NAME,
+        EXEC_MIME_TYPE
+      );
+      this.keyboard_manager.register_events(toinsert);
+      // Render to node
+      const props = {data: data, metadata: metadata[EXEC_MIME_TYPE]};
+      render(props, toinsert[toinsert.length - 1]);
+      element.append(toinsert);
+      return toinsert
+    }
+
+    /* Handle when an output is cleared or removed */
+    events.on('clear_output.CodeCell', handleClearOutput);
+    events.on('delete.Cell', handleClearOutput);
+
+    /* Handle when a new output is added */
+    events.on('output_added.OutputArea', handleAddOutput);
+
+    /**
+     * Register the mime type and append_mime function with output_area
+     */
+    OutputArea.prototype.register_mime_type(EXEC_MIME_TYPE, append_mime, {
+      /* Is output safe? */
+      safe: true,
+      /* Index of renderer in `output_area.display_order` */
+      index: 0
+    });
+  }
+
+  // register the mime type if in Jupyter Notebook environment and previously unregistered
+  if (root.Jupyter !== undefined) {
+    const events = require('base/js/events');
+    const OutputArea = require('notebook/js/outputarea').OutputArea;
+
+    if (OutputArea.prototype.mime_types().indexOf(EXEC_MIME_TYPE) == -1) {
+      register_renderer(events, OutputArea);
+    }
+  }
+  if (typeof (root._bokeh_timeout) === "undefined" || force === true) {
+    root._bokeh_timeout = Date.now() + 5000;
+    root._bokeh_failed_load = false;
+  }
+
+  const NB_LOAD_WARNING = {'data': {'text/html':
+     "<div style='background-color: #fdd'>\n"+
+     "<p>\n"+
+     "BokehJS does not appear to have successfully loaded. If loading BokehJS from CDN, this \n"+
+     "may be due to a slow or bad network connection. Possible fixes:\n"+
+     "</p>\n"+
+     "<ul>\n"+
+     "<li>re-rerun `output_notebook()` to attempt to load from CDN again, or</li>\n"+
+     "<li>use INLINE resources instead, as so:</li>\n"+
+     "</ul>\n"+
+     "<code>\n"+
+     "from bokeh.resources import INLINE\n"+
+     "output_notebook(resources=INLINE)\n"+
+     "</code>\n"+
+     "</div>"}};
+
+  function display_loaded() {
+    const el = document.getElementById("d31f6a0b-42ca-4b8e-b277-aa0100d77f61");
+    if (el != null) {
+      el.textContent = "BokehJS is loading...";
+    }
+    if (root.Bokeh !== undefined) {
+      if (el != null) {
+        el.textContent = "BokehJS " + root.Bokeh.version + " successfully loaded.";
+      }
+    } else if (Date.now() < root._bokeh_timeout) {
+      setTimeout(display_loaded, 100)
+    }
+  }
+
+  function run_callbacks() {
+    try {
+      root._bokeh_onload_callbacks.forEach(function(callback) {
+        if (callback != null)
+          callback();
+      });
+    } finally {
+      delete root._bokeh_onload_callbacks
+    }
+    console.debug("Bokeh: all callbacks have finished");
+  }
+
+  function load_libs(css_urls, js_urls, callback) {
+    if (css_urls == null) css_urls = [];
+    if (js_urls == null) js_urls = [];
+
+    root._bokeh_onload_callbacks.push(callback);
+    if (root._bokeh_is_loading > 0) {
+      console.debug("Bokeh: BokehJS is being loaded, scheduling callback at", now());
+      return null;
+    }
+    if (js_urls == null || js_urls.length === 0) {
+      run_callbacks();
+      return null;
+    }
+    console.debug("Bokeh: BokehJS not loaded, scheduling load and callback at", now());
+    root._bokeh_is_loading = css_urls.length + js_urls.length;
+
+    function on_load() {
+      root._bokeh_is_loading--;
+      if (root._bokeh_is_loading === 0) {
+        console.debug("Bokeh: all BokehJS libraries/stylesheets loaded");
+        run_callbacks()
+      }
+    }
+
+    function on_error(url) {
+      console.error("failed to load " + url);
+    }
+
+    for (let i = 0; i < css_urls.length; i++) {
+      const url = css_urls[i];
+      const element = document.createElement("link");
+      element.onload = on_load;
+      element.onerror = on_error.bind(null, url);
+      element.rel = "stylesheet";
+      element.type = "text/css";
+      element.href = url;
+      console.debug("Bokeh: injecting link tag for BokehJS stylesheet: ", url);
+      document.body.appendChild(element);
+    }
+
+    for (let i = 0; i < js_urls.length; i++) {
+      const url = js_urls[i];
+      const element = document.createElement('script');
+      element.onload = on_load;
+      element.onerror = on_error.bind(null, url);
+      element.async = false;
+      element.src = url;
+      console.debug("Bokeh: injecting script tag for BokehJS library: ", url);
+      document.head.appendChild(element);
+    }
+  };
+
+  function inject_raw_css(css) {
+    const element = document.createElement("style");
+    element.appendChild(document.createTextNode(css));
+    document.body.appendChild(element);
+  }
+
+  const js_urls = ["https://cdn.bokeh.org/bokeh/release/bokeh-3.3.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-gl-3.3.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.3.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.3.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-3.3.2.min.js"];
+  const css_urls = [];
+
+  const inline_js = [    function(Bokeh) {
+      Bokeh.set_log_level("info");
+    },
+function(Bokeh) {
+    }
+  ];
+
+  function run_inline_js() {
+    if (root.Bokeh !== undefined || force === true) {
+          for (let i = 0; i < inline_js.length; i++) {
+      inline_js[i].call(root, root.Bokeh);
+    }
+if (force === true) {
+        display_loaded();
+      }} else if (Date.now() < root._bokeh_timeout) {
+      setTimeout(run_inline_js, 100);
+    } else if (!root._bokeh_failed_load) {
+      console.log("Bokeh: BokehJS failed to load within specified timeout.");
+      root._bokeh_failed_load = true;
+    } else if (force !== true) {
+      const cell = $(document.getElementById("d31f6a0b-42ca-4b8e-b277-aa0100d77f61")).parents('.cell').data().cell;
+      cell.output_area.append_execute_result(NB_LOAD_WARNING)
+    }
+  }
+
+  if (root._bokeh_is_loading === 0) {
+    console.debug("Bokeh: BokehJS loaded, going straight to plotting");
+    run_inline_js();
+  } else {
+    load_libs(css_urls, js_urls, function() {
+      console.debug("Bokeh: BokehJS plotting callback run at", now());
+      run_inline_js();
+    });
+  }
+}(window));</script><div class="output text_html">
+  <div id="b2d73bd7-c251-454a-a26a-e2b464cc0a01" data-root-id="p1001" style="display: contents;"></div>
+</div><script type="application/javascript">(function(root) {
+  function embed_document(root) {
+  const docs_json = {"0f4dfb43-8c3e-443b-b2dd-83d2f94df9a4":{"version":"3.3.2","title":"Bokeh Application","roots":[{"type":"object","name":"Figure","id":"p1001","attributes":{"width":800,"x_range":{"type":"object","name":"DataRange1d","id":"p1002"},"y_range":{"type":"object","name":"DataRange1d","id":"p1003"},"x_scale":{"type":"object","name":"LinearScale","id":"p1011"},"y_scale":{"type":"object","name":"LinearScale","id":"p1012"},"title":{"type":"object","name":"Title","id":"p1004","attributes":{"text":"Interactive Clustering of Digits Dataset\nARI: 0.6669","text_font_size":"16pt"}},"renderers":[{"type":"object","name":"GlyphRenderer","id":"p1043","attributes":{"data_source":{"type":"object","name":"ColumnDataSource","id":"p1034","attributes":{"selected":{"type":"object","name":"Selection","id":"p1035","attributes":{"indices":[],"line_indices":[]}},"selection_policy":{"type":"object","name":"UnionRenderers","id":"p1036"},"data":{"type":"map","entries":[["x",{"type":"ndarray","array":{"type":"bytes","data":"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"},"shape":[1797],"dtype":"float64","order":"little"}],["y",{"type":"ndarray","array":{"type":"bytes","data":"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"},"shape":[1797],"dtype":"float64","order":"little"}],["color",["#ff7f0e","#d62728","#d62728","#e377c2","#17becf","#bcbd22","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#2ca02c","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#2ca02c","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#2ca02c","#d62728","#bcbd22","#ff7f0e","#bcbd22","#7f7f7f","#7f7f7f","#8c564b","#7f7f7f","#ff7f0e","#bcbd22","#d62728","#bcbd22","#d62728","#17becf","#2ca02c","#9467bd","#9467bd","#e377c2","#7f7f7f","#2ca02c","#ff7f0e","#ff7f0e","#d62728","#d62728","#9467bd","#d62728","#9467bd","#ff7f0e","#2ca02c","#d62728","#8c564b","#e377c2","#e377c2","#9467bd","#e377c2","#e377c2","#17becf","#8c564b","#8c564b","#8c564b","#17becf","#d62728","#2ca02c","#7f7f7f","#ff7f0e","#bcbd22","#7f7f7f","#2ca02c","#d62728","#2ca02c","#ff7f0e","#ff7f0e","#2ca02c","#9467bd","#8c564b","#e377c2","#1f77b4","#2ca02c","#9467bd","#17becf","#8c564b","#e377c2","#2ca02c","#e377c2","#e377c2","#d62728","#9467bd","#d62728","#d62728","#17becf","#e377c2","#d62728","#17becf","#ff7f0e","#7f7f7f","#9467bd","#8c564b","#bcbd22","#8c564b","#2ca02c","#9467bd","#7f7f7f","#17becf","#17becf","#9467bd","#1f77b4","#d62728","#d62728","#d62728","#7f7f7f","#9467bd","#bcbd22","#7f7f7f","#17becf","#d62728","#d62728","#17becf","#bcbd22","#ff7f0e","#d62728","#bcbd22","#d62728","#ff7f0e","#2ca02c","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#2ca02c","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#2ca02c","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#e377c2","#7f7f7f","#7f7f7f","#8c564b","#7f7f7f","#ff7f0e","#bcbd22","#d62728","#bcbd22","#d62728","#17becf","#2ca02c","#9467bd","#9467bd","#e377c2","#7f7f7f","#2ca02c","#ff7f0e","#ff7f0e","#1f77b4","#1f77b4","#9467bd","#d62728","#1f77b4","#ff7f0e","#2ca02c","#1f77b4","#8c564b","#e377c2","#e377c2","#9467bd","#e377c2","#e377c2","#17becf","#8c564b","#8c564b","#8c564b","#d62728","#bcbd22","#2ca02c","#7f7f7f","#ff7f0e","#bcbd22","#7f7f7f","#1f77b4","#d62728","#1f77b4","#ff7f0e","#ff7f0e","#2ca02c","#9467bd","#8c564b","#e377c2","#1f77b4","#2ca02c","#9467bd","#e377c2","#2ca02c","#e377c2","#bcbd22","#2ca02c","#9467bd","#8c564b","#d62728","#17becf","#e377c2","#2ca02c","#17becf","#ff7f0e","#7f7f7f","#9467bd","#8c564b","#bcbd22","#8c564b","#2ca02c","#9467bd","#7f7f7f","#d62728","#17becf","#9467bd","#1f77b4","#d62728","#1f77b4","#1f77b4","#7f7f7f","#7f7f7f","#2ca02c","#d62728","#d62728","#17becf","#bcbd22","#ff7f0e","#d62728","#bcbd22","#d62728","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#bcbd22","#8c564b","#9467bd","#bcbd22","#7f7f7f","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#9467bd","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#bcbd22","#7f7f7f","#bcbd22","#8c564b","#bcbd22","#ff7f0e","#bcbd22","#d62728","#bcbd22","#d62728","#17becf","#d62728","#9467bd","#9467bd","#e377c2","#7f7f7f","#d62728","#ff7f0e","#ff7f0e","#1f77b4","#1f77b4","#9467bd","#bcbd22","#1f77b4","#ff7f0e","#2ca02c","#1f77b4","#8c564b","#e377c2","#e377c2","#9467bd","#e377c2","#e377c2","#17becf","#8c564b","#8c564b","#8c564b","#17becf","#9467bd","#d62728","#7f7f7f","#ff7f0e","#9467bd","#7f7f7f","#1f77b4","#bcbd22","#1f77b4","#ff7f0e","#ff7f0e","#d62728","#9467bd","#8c564b","#e377c2","#1f77b4","#d62728","#9467bd","#17becf","#8c564b","#e377c2","#d62728","#e377c2","#9467bd","#d62728","#9467bd","#8c564b","#d62728","#17becf","#e377c2","#d62728","#17becf","#ff7f0e","#bcbd22","#e377c2","#8c564b","#9467bd","#8c564b","#d62728","#9467bd","#7f7f7f","#17becf","#17becf","#9467bd","#1f77b4","#bcbd22","#1f77b4","#1f77b4","#bcbd22","#9467bd","#2ca02c","#7f7f7f","#17becf","#bcbd22","#bcbd22","#17becf","#2ca02c","#ff7f0e","#d62728","#9467bd","#e377c2","#ff7f0e","#2ca02c","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#bcbd22","#bcbd22","#ff7f0e","#2ca02c","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#2ca02c","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#7f7f7f","#bcbd22","#bcbd22","#ff7f0e","#bcbd22","#e377c2","#7f7f7f","#8c564b","#e377c2","#ff7f0e","#bcbd22","#bcbd22","#bcbd22","#bcbd22","#17becf","#2ca02c","#9467bd","#9467bd","#e377c2","#7f7f7f","#2ca02c","#ff7f0e","#ff7f0e","#1f77b4","#1f77b4","#9467bd","#bcbd22","#1f77b4","#ff7f0e","#1f77b4","#1f77b4","#8c564b","#e377c2","#bcbd22","#7f7f7f","#bcbd22","#bcbd22","#17becf","#8c564b","#8c564b","#8c564b","#17becf","#bcbd22","#2ca02c","#bcbd22","#ff7f0e","#bcbd22","#7f7f7f","#1f77b4","#d62728","#1f77b4","#ff7f0e","#ff7f0e","#2ca02c","#7f7f7f","#8c564b","#e377c2","#1f77b4","#2ca02c","#9467bd","#17becf","#8c564b","#e377c2","#2ca02c","#e377c2","#bcbd22","#2ca02c","#7f7f7f","#8c564b","#bcbd22","#17becf","#e377c2","#2ca02c","#17becf","#ff7f0e","#7f7f7f","#e377c2","#8c564b","#bcbd22","#d62728","#2ca02c","#9467bd","#7f7f7f","#2ca02c","#17becf","#7f7f7f","#1f77b4","#bcbd22","#1f77b4","#d62728","#7f7f7f","#9467bd","#bcbd22","#7f7f7f","#17becf","#d62728","#d62728","#17becf","#bcbd22","#ff7f0e","#bcbd22","#bcbd22","#bcbd22","#ff7f0e","#1f77b4","#1f77b4","#bcbd22","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#1f77b4","#1f77b4","#bcbd22","#9467bd","#bcbd22","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#1f77b4","#1f77b4","#1f77b4","#17becf","#bcbd22","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#d62728","#7f7f7f","#bcbd22","#8c564b","#bcbd22","#ff7f0e","#bcbd22","#d62728","#bcbd22","#d62728","#17becf","#1f77b4","#9467bd","#9467bd","#e377c2","#bcbd22","#8c564b","#ff7f0e","#ff7f0e","#1f77b4","#1f77b4","#9467bd","#8c564b","#1f77b4","#ff7f0e","#1f77b4","#1f77b4","#8c564b","#bcbd22","#e377c2","#9467bd","#bcbd22","#bcbd22","#17becf","#8c564b","#8c564b","#8c564b","#17becf","#bcbd22","#8c564b","#7f7f7f","#ff7f0e","#bcbd22","#bcbd22","#1f77b4","#d62728","#1f77b4","#ff7f0e","#ff7f0e","#1f77b4","#9467bd","#8c564b","#bcbd22","#1f77b4","#1f77b4","#9467bd","#17becf","#8c564b","#e377c2","#1f77b4","#bcbd22","#bcbd22","#1f77b4","#9467bd","#8c564b","#d62728","#17becf","#e377c2","#d62728","#17becf","#ff7f0e","#bcbd22","#e377c2","#8c564b","#bcbd22","#8c564b","#1f77b4","#9467bd","#7f7f7f","#17becf","#17becf","#9467bd","#1f77b4","#d62728","#1f77b4","#1f77b4","#7f7f7f","#9467bd","#bcbd22","#bcbd22","#9467bd","#2ca02c","#d62728","#9467bd","#bcbd22","#ff7f0e","#d62728","#bcbd22","#d62728","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#bcbd22","#2ca02c","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#2ca02c","#ff7f0e","#d62728","#1f77b4","#e377c2","#2ca02c","#7f7f7f","#8c564b","#9467bd","#bcbd22","#2ca02c","#ff7f0e","#2ca02c","#17becf","#7f7f7f","#8c564b","#7f7f7f","#ff7f0e","#2ca02c","#d62728","#2ca02c","#bcbd22","#17becf","#d62728","#9467bd","#2ca02c","#e377c2","#7f7f7f","#d62728","#ff7f0e","#ff7f0e","#e377c2","#1f77b4","#9467bd","#d62728","#d62728","#ff7f0e","#d62728","#bcbd22","#8c564b","#e377c2","#e377c2","#9467bd","#e377c2","#e377c2","#17becf","#8c564b","#8c564b","#8c564b","#17becf","#2ca02c","#d62728","#7f7f7f","#ff7f0e","#2ca02c","#7f7f7f","#e377c2","#bcbd22","#1f77b4","#ff7f0e","#ff7f0e","#d62728","#9467bd","#8c564b","#e377c2","#1f77b4","#d62728","#9467bd","#17becf","#8c564b","#e377c2","#d62728","#e377c2","#2ca02c","#d62728","#9467bd","#8c564b","#d62728","#17becf","#e377c2","#d62728","#9467bd","#ff7f0e","#7f7f7f","#e377c2","#8c564b","#2ca02c","#8c564b","#d62728","#9467bd","#7f7f7f","#17becf","#9467bd","#9467bd","#1f77b4","#d62728","#1f77b4","#1f77b4","#7f7f7f","#9467bd","#2ca02c","#7f7f7f","#17becf","#bcbd22","#d62728","#9467bd","#2ca02c","#ff7f0e","#bcbd22","#2ca02c","#d62728","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#8c564b","#bcbd22","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#ff7f0e","#9467bd","#2ca02c","#bcbd22","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#bcbd22","#7f7f7f","#7f7f7f","#8c564b","#7f7f7f","#ff7f0e","#bcbd22","#bcbd22","#bcbd22","#bcbd22","#17becf","#d62728","#9467bd","#9467bd","#e377c2","#7f7f7f","#d62728","#ff7f0e","#ff7f0e","#1f77b4","#1f77b4","#9467bd","#2ca02c","#1f77b4","#ff7f0e","#1f77b4","#1f77b4","#8c564b","#e377c2","#e377c2","#9467bd","#e377c2","#e377c2","#17becf","#8c564b","#8c564b","#8c564b","#17becf","#bcbd22","#d62728","#7f7f7f","#ff7f0e","#bcbd22","#7f7f7f","#1f77b4","#d62728","#1f77b4","#ff7f0e","#ff7f0e","#d62728","#9467bd","#8c564b","#e377c2","#9467bd","#d62728","#9467bd","#17becf","#8c564b","#e377c2","#d62728","#e377c2","#bcbd22","#d62728","#9467bd","#8c564b","#1f77b4","#17becf","#e377c2","#d62728","#17becf","#ff7f0e","#7f7f7f","#e377c2","#8c564b","#bcbd22","#8c564b","#d62728","#9467bd","#7f7f7f","#17becf","#17becf","#9467bd","#1f77b4","#2ca02c","#9467bd","#1f77b4","#7f7f7f","#9467bd","#bcbd22","#7f7f7f","#17becf","#2ca02c","#bcbd22","#17becf","#bcbd22","#ff7f0e","#d62728","#bcbd22","#d62728","#1f77b4","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#bcbd22","#bcbd22","#ff7f0e","#1f77b4","#1f77b4","#e377c2","#17becf","#bcbd22","#8c564b","#9467bd","#bcbd22","#bcbd22","#ff7f0e","#1f77b4","#1f77b4","#e377c2","#17becf","#bcbd22","#8c564b","#9467bd","#bcbd22","#bcbd22","#ff7f0e","#bcbd22","#bcbd22","#bcbd22","#8c564b","#bcbd22","#ff7f0e","#bcbd22","#bcbd22","#bcbd22","#d62728","#17becf","#e377c2","#9467bd","#9467bd","#e377c2","#bcbd22","#1f77b4","#1f77b4","#9467bd","#bcbd22","#1f77b4","#ff7f0e","#1f77b4","#1f77b4","#8c564b","#e377c2","#e377c2","#9467bd","#e377c2","#e377c2","#17becf","#8c564b","#8c564b","#8c564b","#17becf","#bcbd22","#1f77b4","#bcbd22","#ff7f0e","#bcbd22","#bcbd22","#1f77b4","#bcbd22","#1f77b4","#ff7f0e","#ff7f0e","#1f77b4","#9467bd","#8c564b","#e377c2","#1f77b4","#1f77b4","#17becf","#8c564b","#e377c2","#1f77b4","#e377c2","#bcbd22","#1f77b4","#9467bd","#8c564b","#bcbd22","#17becf","#e377c2","#1f77b4","#17becf","#ff7f0e","#7f7f7f","#e377c2","#8c564b","#bcbd22","#8c564b","#1f77b4","#9467bd","#bcbd22","#17becf","#17becf","#9467bd","#1f77b4","#bcbd22","#1f77b4","#1f77b4","#bcbd22","#9467bd","#bcbd22","#bcbd22","#17becf","#17becf","#bcbd22","#ff7f0e","#bcbd22","#bcbd22","#bcbd22","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#9467bd","#e377c2","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#bcbd22","#bcbd22","#ff7f0e","#bcbd22","#7f7f7f","#7f7f7f","#8c564b","#7f7f7f","#ff7f0e","#bcbd22","#bcbd22","#bcbd22","#d62728","#17becf","#d62728","#9467bd","#9467bd","#e377c2","#7f7f7f","#d62728","#ff7f0e","#ff7f0e","#9467bd","#d62728","#1f77b4","#ff7f0e","#d62728","#1f77b4","#8c564b","#e377c2","#e377c2","#9467bd","#e377c2","#e377c2","#17becf","#8c564b","#8c564b","#8c564b","#9467bd","#bcbd22","#d62728","#7f7f7f","#ff7f0e","#7f7f7f","#7f7f7f","#1f77b4","#e377c2","#e377c2","#ff7f0e","#ff7f0e","#d62728","#9467bd","#8c564b","#e377c2","#1f77b4","#d62728","#9467bd","#17becf","#8c564b","#e377c2","#d62728","#9467bd","#bcbd22","#d62728","#9467bd","#8c564b","#d62728","#17becf","#e377c2","#d62728","#17becf","#ff7f0e","#7f7f7f","#e377c2","#8c564b","#bcbd22","#8c564b","#d62728","#9467bd","#7f7f7f","#17becf","#17becf","#9467bd","#1f77b4","#d62728","#1f77b4","#1f77b4","#7f7f7f","#9467bd","#bcbd22","#7f7f7f","#17becf","#1f77b4","#e377c2","#17becf","#bcbd22","#ff7f0e","#d62728","#bcbd22","#d62728","#ff7f0e","#2ca02c","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#e377c2","#bcbd22","#ff7f0e","#2ca02c","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#bcbd22","#7f7f7f","#7f7f7f","#8c564b","#7f7f7f","#ff7f0e","#bcbd22","#7f7f7f","#bcbd22","#7f7f7f","#17becf","#d62728","#9467bd","#9467bd","#9467bd","#7f7f7f","#d62728","#ff7f0e","#ff7f0e","#1f77b4","#1f77b4","#9467bd","#9467bd","#1f77b4","#ff7f0e","#d62728","#1f77b4","#8c564b","#e377c2","#e377c2","#9467bd","#e377c2","#e377c2","#17becf","#8c564b","#8c564b","#8c564b","#17becf","#bcbd22","#d62728","#7f7f7f","#ff7f0e","#bcbd22","#7f7f7f","#1f77b4","#7f7f7f","#1f77b4","#ff7f0e","#ff7f0e","#d62728","#9467bd","#8c564b","#e377c2","#1f77b4","#d62728","#9467bd","#17becf","#8c564b","#e377c2","#d62728","#e377c2","#bcbd22","#d62728","#9467bd","#8c564b","#d62728","#17becf","#e377c2","#d62728","#17becf","#ff7f0e","#7f7f7f","#e377c2","#8c564b","#bcbd22","#8c564b","#7f7f7f","#9467bd","#7f7f7f","#17becf","#17becf","#9467bd","#1f77b4","#1f77b4","#1f77b4","#1f77b4","#7f7f7f","#9467bd","#bcbd22","#7f7f7f","#17becf","#d62728","#d62728","#17becf","#bcbd22","#ff7f0e","#d62728","#bcbd22","#d62728","#ff7f0e","#2ca02c","#1f77b4","#e377c2","#17becf","#bcbd22","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#2ca02c","#e377c2","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#bcbd22","#7f7f7f","#7f7f7f","#8c564b","#7f7f7f","#ff7f0e","#bcbd22","#d62728","#bcbd22","#d62728","#17becf","#d62728","#9467bd","#9467bd","#e377c2","#7f7f7f","#d62728","#ff7f0e","#ff7f0e","#e377c2","#e377c2","#9467bd","#d62728","#e377c2","#ff7f0e","#2ca02c","#e377c2","#8c564b","#e377c2","#e377c2","#9467bd","#e377c2","#e377c2","#17becf","#8c564b","#8c564b","#8c564b","#17becf","#bcbd22","#d62728","#7f7f7f","#ff7f0e","#bcbd22","#8c564b","#1f77b4","#d62728","#e377c2","#ff7f0e","#ff7f0e","#2ca02c","#9467bd","#8c564b","#e377c2","#1f77b4","#d62728","#9467bd","#17becf","#8c564b","#e377c2","#d62728","#e377c2","#bcbd22","#d62728","#9467bd","#8c564b","#d62728","#17becf","#e377c2","#d62728","#17becf","#ff7f0e","#7f7f7f","#e377c2","#8c564b","#bcbd22","#8c564b","#d62728","#9467bd","#7f7f7f","#17becf","#17becf","#9467bd","#bcbd22","#d62728","#1f77b4","#1f77b4","#bcbd22","#9467bd","#bcbd22","#7f7f7f","#17becf","#d62728","#d62728","#17becf","#bcbd22","#ff7f0e","#d62728","#ff7f0e","#2ca02c","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#bcbd22","#bcbd22","#ff7f0e","#2ca02c","#1f77b4","#e377c2","#17becf","#bcbd22","#8c564b","#9467bd","#bcbd22","#bcbd22","#ff7f0e","#2ca02c","#1f77b4","#e377c2","#17becf","#bcbd22","#8c564b","#9467bd","#bcbd22","#bcbd22","#ff7f0e","#bcbd22","#bcbd22","#bcbd22","#8c564b","#bcbd22","#ff7f0e","#bcbd22","#bcbd22","#bcbd22","#bcbd22","#17becf","#2ca02c","#9467bd","#9467bd","#e377c2","#bcbd22","#2ca02c","#ff7f0e","#ff7f0e","#1f77b4","#1f77b4","#9467bd","#2ca02c","#1f77b4","#ff7f0e","#2ca02c","#1f77b4","#8c564b","#e377c2","#e377c2","#9467bd","#e377c2","#e377c2","#17becf","#8c564b","#8c564b","#8c564b","#17becf","#bcbd22","#2ca02c","#bcbd22","#ff7f0e","#bcbd22","#7f7f7f","#1f77b4","#bcbd22","#1f77b4","#ff7f0e","#ff7f0e","#2ca02c","#9467bd","#8c564b","#e377c2","#1f77b4","#2ca02c","#9467bd","#17becf","#8c564b","#e377c2","#2ca02c","#e377c2","#bcbd22","#2ca02c","#9467bd","#8c564b","#bcbd22","#17becf","#e377c2","#2ca02c","#17becf","#ff7f0e","#bcbd22","#e377c2","#8c564b","#bcbd22","#8c564b","#2ca02c","#9467bd","#bcbd22","#17becf","#17becf","#9467bd","#1f77b4","#bcbd22","#1f77b4","#1f77b4","#7f7f7f","#9467bd","#bcbd22","#7f7f7f","#17becf","#bcbd22","#7f7f7f","#17becf","#e377c2","#ff7f0e","#7f7f7f","#bcbd22","#bcbd22","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#2ca02c","#d62728","#d62728","#2ca02c","#ff7f0e","#d62728","#e377c2","#e377c2","#17becf","#7f7f7f","#8c564b","#2ca02c","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#7f7f7f","#2ca02c","#17becf","#2ca02c","#7f7f7f","#7f7f7f","#8c564b","#7f7f7f","#ff7f0e","#7f7f7f","#d62728","#7f7f7f","#d62728","#17becf","#d62728","#9467bd","#9467bd","#d62728","#7f7f7f","#d62728","#ff7f0e","#ff7f0e","#ff7f0e","#1f77b4","#d62728","#d62728","#e377c2","#ff7f0e","#d62728","#1f77b4","#8c564b","#d62728","#9467bd","#9467bd","#9467bd","#d62728","#17becf","#8c564b","#8c564b","#8c564b","#d62728","#2ca02c","#d62728","#7f7f7f","#ff7f0e","#bcbd22","#7f7f7f","#e377c2","#d62728","#ff7f0e","#d62728","#9467bd","#8c564b","#e377c2","#1f77b4","#d62728","#9467bd","#d62728","#8c564b","#e377c2","#d62728","#e377c2","#9467bd","#d62728","#9467bd","#8c564b","#d62728","#17becf","#e377c2","#d62728","#17becf","#ff7f0e","#7f7f7f","#e377c2","#8c564b","#e377c2","#8c564b","#d62728","#9467bd","#7f7f7f","#17becf","#17becf","#9467bd","#1f77b4","#e377c2","#7f7f7f","#9467bd","#e377c2","#7f7f7f","#9467bd","#17becf","#7f7f7f","#ff7f0e","#d62728","#7f7f7f","#9467bd","#ff7f0e","#d62728","#1f77b4","#e377c2","#17becf","#7f7f7f","#8c564b","#9467bd","#e377c2","#bcbd22","#ff7f0e","#d62728","#1f77b4","#d62728","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#d62728","#1f77b4","#7f7f7f","#17becf","#7f7f7f","#8c564b","#9467bd","#d62728","#bcbd22","#ff7f0e","#bcbd22","#7f7f7f","#7f7f7f","#8c564b","#7f7f7f","#ff7f0e","#bcbd22","#bcbd22","#bcbd22","#d62728","#17becf","#d62728","#9467bd","#9467bd","#9467bd","#7f7f7f","#d62728","#ff7f0e","#ff7f0e","#1f77b4","#1f77b4","#9467bd","#d62728","#1f77b4","#ff7f0e","#d62728","#1f77b4","#8c564b","#d62728","#d62728","#9467bd","#bcbd22","#d62728","#17becf","#8c564b","#8c564b","#8c564b","#17becf","#bcbd22","#d62728","#7f7f7f","#ff7f0e","#bcbd22","#bcbd22","#1f77b4","#d62728","#1f77b4","#ff7f0e","#ff7f0e","#d62728","#9467bd","#8c564b","#e377c2","#1f77b4","#d62728","#9467bd","#17becf","#8c564b","#e377c2","#d62728","#e377c2","#bcbd22","#d62728","#9467bd","#8c564b","#d62728","#17becf","#7f7f7f","#d62728","#17becf","#ff7f0e","#bcbd22","#e377c2","#8c564b","#bcbd22","#8c564b","#d62728","#9467bd","#7f7f7f","#17becf","#17becf","#9467bd","#1f77b4","#d62728","#1f77b4","#1f77b4","#bcbd22","#9467bd","#bcbd22","#bcbd22","#17becf","#d62728","#d62728","#17becf","#bcbd22","#ff7f0e","#d62728","#bcbd22","#bcbd22"]],["digit",{"type":"ndarray","array":{"type":"bytes","data":"AAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAABAAAAAgAAAAMAAAAEAAAABQAAAAYAAAAHAAAACAAAAAkAAAAAAAAAAQAAAAIAAAADAAAABAAAAAUAAAAGAAAABwAAAAgAAAAJAAAAAAAAAAkAAAAFAAAABQAAAAYAAAAFAAAAAAAAAAkAAAAIAAAACQAAAAgAAAAEAAAAAQAAAAcAAAAHAAAAAwAAAAUAAAABAAAAAAAAAAAAAAACAAAAAgAAAAcAAAAIAAAAAgAAAAAAAAABAAAAAgAAAAYAAAADAAAAAwAAAAcAAAADAAAAAwAAAAQAAAAGAAAABgAAAAYAAAAEAAAACQAAAAEAAAAFAAAAAAAAAAkAAAAFAAAAAgAAAAgAAAACAAAAAAAAAAAAAAABAAAABwAAAAYAAAADAAAAAgAAAAEAAAAHAAAABAAAAAYAAAADAAAAAQAAAAMAAAAJAAAAAQAAAAcAAAAGAAAACAAAAAQAAAADAAAAAQAAAAQAAAAAAAAABQAAAAMAAAAGAAAACQAAAAYAAAABAAAABwAAAAUAAAAEAAAABAAAAAcAAAACAAAACAAAAAIAAAACAAAABQAAAAcAAAAJAAAABQAAAAQAAAAIAAAACAAAAAQAAAAJAAAAAAAAAAgAAAAJAAAACAAAAAAAAAABAAAAAgAAAAMAAAAEAAAABQAAAAYAAAAHAAAACAAAAAkAAAAAAAAAAQAAAAIAAAADAAAABAAAAAUAAAAGAAAABwAAAAgAAAAJAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAAJAAAABQAAAAUAAAAGAAAABQAAAAAAAAAJAAAACAAAAAkAAAAIAAAABAAAAAEAAAAHAAAABwAAAAMAAAAFAAAAAQAAAAAAAAAAAAAAAgAAAAIAAAAHAAAACAAAAAIAAAAAAAAAAQAAAAIAAAAGAAAAAwAAAAMAAAAHAAAAAwAAAAMAAAAEAAAABgAAAAYAAAAGAAAABAAAAAkAAAABAAAABQAAAAAAAAAJAAAABQAAAAIAAAAIAAAAAgAAAAAAAAAAAAAAAQAAAAcAAAAGAAAAAwAAAAIAAAABAAAABwAAAAMAAAABAAAAAwAAAAkAAAABAAAABwAAAAYAAAAIAAAABAAAAAMAAAABAAAABAAAAAAAAAAFAAAAAwAAAAYAAAAJAAAABgAAAAEAAAAHAAAABQAAAAQAAAAEAAAABwAAAAIAAAAIAAAAAgAAAAIAAAAFAAAABQAAAAQAAAAIAAAACAAAAAQAAAAJAAAAAAAAAAgAAAAJAAAACAAAAAAAAAABAAAAAgAAAAMAAAAEAAAABQAAAAYAAAAHAAAACAAAAAkAAAAAAAAAAQAAAAIAAAADAAAABAAAAAUAAAAGAAAABwAAAAgAAAAJAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAAJAAAABQAAAAUAAAAGAAAABQAAAAAAAAAJAAAACAAAAAkAAAAIAAAABAAAAAEAAAAHAAAABwAAAAMAAAAFAAAAAQAAAAAAAAAAAAAAAgAAAAIAAAAHAAAACAAAAAIAAAAAAAAAAQAAAAIAAAAGAAAAAwAAAAMAAAAHAAAAAwAAAAMAAAAEAAAABgAAAAYAAAAGAAAABAAAAAkAAAABAAAABQAAAAAAAAAJAAAABQAAAAIAAAAIAAAAAgAAAAAAAAAAAAAAAQAAAAcAAAAGAAAAAwAAAAIAAAABAAAABwAAAAQAAAAGAAAAAwAAAAEAAAADAAAACQAAAAEAAAAHAAAABgAAAAgAAAAEAAAAAwAAAAEAAAAEAAAAAAAAAAUAAAADAAAABgAAAAkAAAAGAAAAAQAAAAcAAAAFAAAABAAAAAQAAAAHAAAAAgAAAAgAAAACAAAAAgAAAAUAAAAHAAAACQAAAAUAAAAEAAAACAAAAAgAAAAEAAAACQAAAAAAAAAIAAAACQAAAAMAAAAAAAAAAQAAAAIAAAADAAAABAAAAAUAAAAGAAAABwAAAAgAAAAJAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAABAAAAAgAAAAMAAAAEAAAABQAAAAYAAAAHAAAACAAAAAkAAAAAAAAACQAAAAUAAAAFAAAABgAAAAUAAAAAAAAACQAAAAgAAAAJAAAACAAAAAQAAAABAAAABwAAAAcAAAADAAAABQAAAAEAAAAAAAAAAAAAAAIAAAACAAAABwAAAAgAAAACAAAAAAAAAAEAAAACAAAABgAAAAMAAAADAAAABwAAAAMAAAADAAAABAAAAAYAAAAGAAAABgAAAAQAAAAJAAAAAQAAAAUAAAAAAAAACQAAAAUAAAACAAAACAAAAAIAAAAAAAAAAAAAAAEAAAAHAAAABgAAAAMAAAACAAAAAQAAAAcAAAAEAAAABgAAAAMAAAABAAAAAwAAAAkAAAABAAAABwAAAAYAAAAIAAAABAAAAAMAAAABAAAABAAAAAAAAAAFAAAAAwAAAAYAAAAJAAAABgAAAAEAAAAHAAAABQAAAAQAAAAEAAAABwAAAAIAAAAIAAAAAgAAAAIAAAAFAAAABwAAAAkAAAAFAAAABAAAAAgAAAAIAAAABAAAAAkAAAAAAAAACAAAAAkAAAAIAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAABAAAAAgAAAAMAAAAEAAAABQAAAAYAAAAHAAAACAAAAAkAAAAAAAAAAQAAAAIAAAADAAAABAAAAAUAAAAGAAAABwAAAAgAAAAJAAAAAAAAAAkAAAAFAAAABQAAAAYAAAAFAAAAAAAAAAkAAAAIAAAACQAAAAgAAAAEAAAAAQAAAAcAAAAHAAAAAwAAAAUAAAABAAAAAAAAAAAAAAACAAAAAgAAAAcAAAAIAAAAAgAAAAAAAAABAAAAAgAAAAYAAAADAAAAAwAAAAcAAAADAAAAAwAAAAQAAAAGAAAABgAAAAYAAAAEAAAACQAAAAEAAAAFAAAAAAAAAAkAAAAFAAAAAgAAAAgAAAACAAAAAAAAAAAAAAABAAAABwAAAAYAAAADAAAAAgAAAAEAAAAHAAAABAAAAAYAAAADAAAAAQAAAAMAAAAJAAAAAQAAAAcAAAAGAAAACAAAAAQAAAADAAAAAQAAAAQAAAAAAAAABQAAAAMAAAAGAAAACQAAAAYAAAABAAAABwAAAAUAAAAEAAAABAAAAAcAAAACAAAACAAAAAIAAAACAAAABQAAAAcAAAAJAAAABQAAAAQAAAAIAAAACAAAAAQAAAAJAAAAAAAAAAgAAAAJAAAACAAAAAAAAAABAAAAAgAAAAMAAAAEAAAABQAAAAYAAAAHAAAACAAAAAkAAAAAAAAAAQAAAAIAAAADAAAABAAAAAUAAAAGAAAABwAAAAgAAAAJAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAAJAAAABQAAAAUAAAAGAAAABQAAAAAAAAAJAAAACAAAAAkAAAAIAAAABAAAAAEAAAAHAAAABwAAAAMAAAAFAAAAAQAAAAAAAAAAAAAAAgAAAAIAAAAHAAAACAAAAAIAAAAAAAAAAQAAAAIAAAAGAAAAAwAAAAMAAAAHAAAAAwAAAAMAAAAEAAAABgAAAAYAAAAGAAAABAAAAAkAAAABAAAABQAAAAAAAAAJAAAABQAAAAIAAAAIAAAAAgAAAAAAAAAAAAAAAQAAAAcAAAAGAAAAAwAAAAIAAAABAAAABwAAAAQAAAAGAAAAAwAAAAEAAAADAAAACQAAAAEAAAAHAAAABgAAAAgAAAAEAAAAAwAAAAEAAAAEAAAAAAAAAAUAAAADAAAABgAAAAkAAAAGAAAAAQAAAAcAAAAFAAAABAAAAAQAAAAHAAAAAgAAAAgAAAACAAAAAgAAAAUAAAAHAAAACQAAAAUAAAAEAAAACAAAAAgAAAAEAAAACQAAAAAAAAAIAAAACQAAAAgAAAAAAAAAAQAAAAIAAAADAAAABAAAAAUAAAAGAAAABwAAAAgAAAAJAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAABAAAAAgAAAAMAAAAEAAAABQAAAAYAAAAHAAAACAAAAAkAAAAAAAAACQAAAAUAAAAFAAAABgAAAAUAAAAAAAAACQAAAAgAAAAJAAAACAAAAAQAAAABAAAABwAAAAcAAAADAAAABQAAAAEAAAAAAAAAAAAAAAIAAAACAAAABwAAAAgAAAACAAAAAAAAAAEAAAACAAAABgAAAAMAAAADAAAABwAAAAMAAAADAAAABAAAAAYAAAAGAAAABgAAAAQAAAAJAAAAAQAAAAUAAAAAAAAACQAAAAUAAAACAAAACAAAAAIAAAAAAAAAAAAAAAEAAAAHAAAABgAAAAMAAAACAAAAAQAAAAcAAAAEAAAABgAAAAMAAAABAAAAAwAAAAkAAAABAAAABwAAAAYAAAAIAAAABAAAAAMAAAABAAAABAAAAAAAAAAFAAAAAwAAAAYAAAAJAAAABgAAAAEAAAAHAAAABQAAAAQAAAAEAAAABwAAAAIAAAAIAAAAAgAAAAIAAAAFAAAABwAAAAkAAAAFAAAABAAAAAgAAAAIAAAABAAAAAkAAAAAAAAACAAAAAkAAAAIAAAAAQAAAAIAAAADAAAABAAAAAUAAAAGAAAABwAAAAgAAAAJAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAABAAAAAgAAAAMAAAAEAAAABQAAAAYAAAAHAAAACAAAAAkAAAAAAAAACQAAAAUAAAAFAAAABgAAAAUAAAAAAAAACQAAAAgAAAAJAAAACAAAAAQAAAABAAAABwAAAAcAAAADAAAABQAAAAEAAAACAAAABwAAAAgAAAACAAAAAAAAAAEAAAACAAAABgAAAAMAAAADAAAABwAAAAMAAAADAAAABAAAAAYAAAAGAAAABgAAAAQAAAAJAAAAAQAAAAUAAAAAAAAACQAAAAUAAAACAAAACAAAAAIAAAAAAAAAAAAAAAEAAAAHAAAABgAAAAMAAAACAAAAAQAAAAQAAAAGAAAAAwAAAAEAAAADAAAACQAAAAEAAAAHAAAABgAAAAgAAAAEAAAAAwAAAAEAAAAEAAAAAAAAAAUAAAADAAAABgAAAAkAAAAGAAAAAQAAAAcAAAAFAAAABAAAAAQAAAAHAAAAAgAAAAgAAAACAAAAAgAAAAUAAAAHAAAACQAAAAUAAAAEAAAABAAAAAkAAAAAAAAACAAAAAkAAAAIAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAABAAAAAgAAAAMAAAAEAAAABQAAAAYAAAAHAAAACAAAAAkAAAAAAAAAAQAAAAIAAAADAAAABAAAAAUAAAAGAAAABwAAAAgAAAAJAAAAAAAAAAkAAAAFAAAABQAAAAYAAAAFAAAAAAAAAAkAAAAIAAAACQAAAAgAAAAEAAAAAQAAAAcAAAAHAAAAAwAAAAUAAAABAAAAAAAAAAAAAAAHAAAACAAAAAIAAAAAAAAAAQAAAAIAAAAGAAAAAwAAAAMAAAAHAAAAAwAAAAMAAAAEAAAABgAAAAYAAAAGAAAABAAAAAkAAAABAAAABQAAAAAAAAAJAAAABQAAAAIAAAAIAAAAAgAAAAAAAAAAAAAAAQAAAAcAAAAGAAAAAwAAAAIAAAABAAAABwAAAAQAAAAGAAAAAwAAAAEAAAADAAAACQAAAAEAAAAHAAAABgAAAAgAAAAEAAAAAwAAAAEAAAAEAAAAAAAAAAUAAAADAAAABgAAAAkAAAAGAAAAAQAAAAcAAAAFAAAABAAAAAQAAAAHAAAAAgAAAAgAAAACAAAAAgAAAAUAAAAHAAAACQAAAAUAAAAEAAAACAAAAAgAAAAEAAAACQAAAAAAAAAIAAAACQAAAAgAAAAAAAAAAQAAAAIAAAADAAAABAAAAAUAAAAGAAAABwAAAAgAAAAJAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAABAAAAAgAAAAMAAAAEAAAABQAAAAYAAAAHAAAACAAAAAkAAAAAAAAACQAAAAUAAAAFAAAABgAAAAUAAAAAAAAACQAAAAgAAAAJAAAACAAAAAQAAAABAAAABwAAAAcAAAADAAAABQAAAAEAAAAAAAAAAAAAAAIAAAACAAAABwAAAAgAAAACAAAAAAAAAAEAAAACAAAABgAAAAMAAAADAAAABwAAAAMAAAADAAAABAAAAAYAAAAGAAAABgAAAAQAAAAJAAAAAQAAAAUAAAAAAAAACQAAAAUAAAACAAAACAAAAAIAAAAAAAAAAAAAAAEAAAAHAAAABgAAAAMAAAACAAAAAQAAAAcAAAAEAAAABgAAAAMAAAABAAAAAwAAAAkAAAABAAAABwAAAAYAAAAIAAAABAAAAAMAAAABAAAABAAAAAAAAAAFAAAAAwAAAAYAAAAJAAAABgAAAAEAAAAHAAAABQAAAAQAAAAEAAAABwAAAAIAAAAIAAAAAgAAAAIAAAAFAAAABwAAAAkAAAAFAAAABAAAAAgAAAAIAAAABAAAAAkAAAAAAAAACAAAAAkAAAAIAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAABAAAAAgAAAAMAAAAEAAAABQAAAAYAAAAHAAAACAAAAAkAAAAAAAAAAQAAAAIAAAADAAAABAAAAAUAAAAGAAAABwAAAAgAAAAJAAAAAAAAAAkAAAAFAAAABQAAAAYAAAAFAAAAAAAAAAkAAAAIAAAACQAAAAgAAAAEAAAAAQAAAAcAAAAHAAAAAwAAAAUAAAABAAAAAAAAAAAAAAACAAAAAgAAAAcAAAAIAAAAAgAAAAAAAAABAAAAAgAAAAYAAAADAAAAAwAAAAcAAAADAAAAAwAAAAQAAAAGAAAABgAAAAYAAAAEAAAACQAAAAEAAAAFAAAAAAAAAAkAAAAFAAAAAgAAAAgAAAACAAAAAAAAAAAAAAABAAAABwAAAAYAAAADAAAAAgAAAAEAAAAHAAAABAAAAAYAAAADAAAAAQAAAAMAAAAJAAAAAQAAAAcAAAAGAAAACAAAAAQAAAADAAAAAQAAAAQAAAAAAAAABQAAAAMAAAAGAAAACQAAAAYAAAABAAAABwAAAAUAAAAEAAAABAAAAAcAAAACAAAACAAAAAIAAAACAAAABQAAAAcAAAAJAAAABQAAAAQAAAAIAAAACAAAAAQAAAAJAAAAAAAAAAgAAAAAAAAAAQAAAAIAAAADAAAABAAAAAUAAAAGAAAABwAAAAgAAAAJAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAABAAAAAgAAAAMAAAAEAAAABQAAAAYAAAAHAAAACAAAAAkAAAAAAAAACQAAAAUAAAAFAAAABgAAAAUAAAAAAAAACQAAAAgAAAAJAAAACAAAAAQAAAABAAAABwAAAAcAAAADAAAABQAAAAEAAAAAAAAAAAAAAAIAAAACAAAABwAAAAgAAAACAAAAAAAAAAEAAAACAAAABgAAAAMAAAADAAAABwAAAAMAAAADAAAABAAAAAYAAAAGAAAABgAAAAQAAAAJAAAAAQAAAAUAAAAAAAAACQAAAAUAAAACAAAACAAAAAIAAAAAAAAAAAAAAAEAAAAHAAAABgAAAAMAAAACAAAAAQAAAAcAAAAEAAAABgAAAAMAAAABAAAAAwAAAAkAAAABAAAABwAAAAYAAAAIAAAABAAAAAMAAAABAAAABAAAAAAAAAAFAAAAAwAAAAYAAAAJAAAABgAAAAEAAAAHAAAABQAAAAQAAAAEAAAABwAAAAIAAAAIAAAAAgAAAAIAAAAFAAAABwAAAAkAAAAFAAAABAAAAAgAAAAIAAAABAAAAAkAAAAAAAAACAAAAAkAAAAIAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAABAAAAAgAAAAMAAAAEAAAABQAAAAYAAAAJAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAAJAAAABQAAAAUAAAAGAAAABQAAAAAAAAAJAAAACAAAAAkAAAAIAAAABAAAAAEAAAAHAAAABwAAAAMAAAAFAAAAAQAAAAAAAAAAAAAAAgAAAAIAAAAHAAAACAAAAAIAAAAAAAAAAQAAAAIAAAAGAAAAAwAAAAMAAAAHAAAAAwAAAAMAAAAEAAAABgAAAAYAAAAGAAAABAAAAAkAAAABAAAABQAAAAAAAAAJAAAABQAAAAIAAAAIAAAAAAAAAAEAAAAHAAAABgAAAAMAAAACAAAAAQAAAAcAAAAEAAAABgAAAAMAAAABAAAAAwAAAAkAAAABAAAABwAAAAYAAAAIAAAABAAAAAMAAAABAAAABAAAAAAAAAAFAAAAAwAAAAYAAAAJAAAABgAAAAEAAAAHAAAABQAAAAQAAAAEAAAABwAAAAIAAAACAAAABQAAAAcAAAAJAAAABQAAAAQAAAAEAAAACQAAAAAAAAAIAAAACQAAAAgAAAAAAAAAAQAAAAIAAAADAAAABAAAAAUAAAAGAAAABwAAAAgAAAAJAAAAAAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAAAAAABAAAAAgAAAAMAAAAEAAAABQAAAAYAAAAHAAAACAAAAAkAAAAAAAAACQAAAAUAAAAFAAAABgAAAAUAAAAAAAAACQAAAAgAAAAJAAAACAAAAAQAAAABAAAABwAAAAcAAAADAAAABQAAAAEAAAAAAAAAAAAAAAIAAAACAAAABwAAAAgAAAACAAAAAAAAAAEAAAACAAAABgAAAAMAAAADAAAABwAAAAMAAAADAAAABAAAAAYAAAAGAAAABgAAAAQAAAAJAAAAAQAAAAUAAAAAAAAACQAAAAUAAAACAAAACAAAAAIAAAAAAAAAAAAAAAEAAAAHAAAABgAAAAMAAAACAAAAAQAAAAcAAAAEAAAABgAAAAMAAAABAAAAAwAAAAkAAAABAAAABwAAAAYAAAAIAAAABAAAAAMAAAABAAAABAAAAAAAAAAFAAAAAwAAAAYAAAAJAAAABgAAAAEAAAAHAAAABQAAAAQAAAAEAAAABwAAAAIAAAAIAAAAAgAAAAIAAAAFAAAABwAAAAkAAAAFAAAABAAAAAgAAAAIAAAABAAAAAkAAAAAAAAACAAAAAkAAAAIAAAA"},"shape":[1797],"dtype":"int32","order":"little"}],["cluster",{"type":"ndarray","array":{"type":"bytes","data":"AQAAAAMAAAADAAAABgAAAAkAAAAIAAAABQAAAAQAAAADAAAACAAAAAEAAAACAAAAAAAAAAYAAAAJAAAABwAAAAUAAAAEAAAAAwAAAAgAAAABAAAAAgAAAAAAAAAGAAAACQAAAAcAAAAFAAAAAgAAAAMAAAAIAAAAAQAAAAgAAAAHAAAABwAAAAUAAAAHAAAAAQAAAAgAAAADAAAACAAAAAMAAAAJAAAAAgAAAAQAAAAEAAAABgAAAAcAAAACAAAAAQAAAAEAAAADAAAAAwAAAAQAAAADAAAABAAAAAEAAAACAAAAAwAAAAUAAAAGAAAABgAAAAQAAAAGAAAABgAAAAkAAAAFAAAABQAAAAUAAAAJAAAAAwAAAAIAAAAHAAAAAQAAAAgAAAAHAAAAAgAAAAMAAAACAAAAAQAAAAEAAAACAAAABAAAAAUAAAAGAAAAAAAAAAIAAAAEAAAACQAAAAUAAAAGAAAAAgAAAAYAAAAGAAAAAwAAAAQAAAADAAAAAwAAAAkAAAAGAAAAAwAAAAkAAAABAAAABwAAAAQAAAAFAAAACAAAAAUAAAACAAAABAAAAAcAAAAJAAAACQAAAAQAAAAAAAAAAwAAAAMAAAADAAAABwAAAAQAAAAIAAAABwAAAAkAAAADAAAAAwAAAAkAAAAIAAAAAQAAAAMAAAAIAAAAAwAAAAEAAAACAAAAAAAAAAYAAAAJAAAABwAAAAUAAAAEAAAAAwAAAAgAAAABAAAAAgAAAAAAAAAGAAAACQAAAAcAAAAFAAAABAAAAAMAAAAIAAAAAQAAAAIAAAAAAAAABgAAAAkAAAAHAAAABQAAAAQAAAADAAAACAAAAAEAAAAGAAAABwAAAAcAAAAFAAAABwAAAAEAAAAIAAAAAwAAAAgAAAADAAAACQAAAAIAAAAEAAAABAAAAAYAAAAHAAAAAgAAAAEAAAABAAAAAAAAAAAAAAAEAAAAAwAAAAAAAAABAAAAAgAAAAAAAAAFAAAABgAAAAYAAAAEAAAABgAAAAYAAAAJAAAABQAAAAUAAAAFAAAAAwAAAAgAAAACAAAABwAAAAEAAAAIAAAABwAAAAAAAAADAAAAAAAAAAEAAAABAAAAAgAAAAQAAAAFAAAABgAAAAAAAAACAAAABAAAAAYAAAACAAAABgAAAAgAAAACAAAABAAAAAUAAAADAAAACQAAAAYAAAACAAAACQAAAAEAAAAHAAAABAAAAAUAAAAIAAAABQAAAAIAAAAEAAAABwAAAAMAAAAJAAAABAAAAAAAAAADAAAAAAAAAAAAAAAHAAAABwAAAAIAAAADAAAAAwAAAAkAAAAIAAAAAQAAAAMAAAAIAAAAAwAAAAEAAAADAAAAAAAAAAYAAAAJAAAACAAAAAUAAAAEAAAACAAAAAcAAAABAAAAAwAAAAAAAAAGAAAACQAAAAcAAAAFAAAABAAAAAMAAAAEAAAAAQAAAAMAAAAAAAAABgAAAAkAAAAHAAAABQAAAAQAAAADAAAACAAAAAEAAAAIAAAABwAAAAgAAAAFAAAACAAAAAEAAAAIAAAAAwAAAAgAAAADAAAACQAAAAMAAAAEAAAABAAAAAYAAAAHAAAAAwAAAAEAAAABAAAAAAAAAAAAAAAEAAAACAAAAAAAAAABAAAAAgAAAAAAAAAFAAAABgAAAAYAAAAEAAAABgAAAAYAAAAJAAAABQAAAAUAAAAFAAAACQAAAAQAAAADAAAABwAAAAEAAAAEAAAABwAAAAAAAAAIAAAAAAAAAAEAAAABAAAAAwAAAAQAAAAFAAAABgAAAAAAAAADAAAABAAAAAkAAAAFAAAABgAAAAMAAAAGAAAABAAAAAMAAAAEAAAABQAAAAMAAAAJAAAABgAAAAMAAAAJAAAAAQAAAAgAAAAGAAAABQAAAAQAAAAFAAAAAwAAAAQAAAAHAAAACQAAAAkAAAAEAAAAAAAAAAgAAAAAAAAAAAAAAAgAAAAEAAAAAgAAAAcAAAAJAAAACAAAAAgAAAAJAAAAAgAAAAEAAAADAAAABAAAAAYAAAABAAAAAgAAAAAAAAAGAAAACQAAAAcAAAAFAAAABAAAAAgAAAAIAAAAAQAAAAIAAAAAAAAABgAAAAkAAAAHAAAABQAAAAQAAAADAAAACAAAAAEAAAACAAAAAAAAAAYAAAAJAAAABwAAAAUAAAAHAAAACAAAAAgAAAABAAAACAAAAAYAAAAHAAAABQAAAAYAAAABAAAACAAAAAgAAAAIAAAACAAAAAkAAAACAAAABAAAAAQAAAAGAAAABwAAAAIAAAABAAAAAQAAAAAAAAAAAAAABAAAAAgAAAAAAAAAAQAAAAAAAAAAAAAABQAAAAYAAAAIAAAABwAAAAgAAAAIAAAACQAAAAUAAAAFAAAABQAAAAkAAAAIAAAAAgAAAAgAAAABAAAACAAAAAcAAAAAAAAAAwAAAAAAAAABAAAAAQAAAAIAAAAHAAAABQAAAAYAAAAAAAAAAgAAAAQAAAAJAAAABQAAAAYAAAACAAAABgAAAAgAAAACAAAABwAAAAUAAAAIAAAACQAAAAYAAAACAAAACQAAAAEAAAAHAAAABgAAAAUAAAAIAAAAAwAAAAIAAAAEAAAABwAAAAIAAAAJAAAABwAAAAAAAAAIAAAAAAAAAAMAAAAHAAAABAAAAAgAAAAHAAAACQAAAAMAAAADAAAACQAAAAgAAAABAAAACAAAAAgAAAAIAAAAAQAAAAAAAAAAAAAACAAAAAkAAAAHAAAABQAAAAQAAAADAAAACAAAAAEAAAAAAAAAAAAAAAgAAAAEAAAACAAAAAUAAAAEAAAAAwAAAAgAAAABAAAAAAAAAAAAAAAAAAAACQAAAAgAAAAFAAAABAAAAAMAAAAIAAAAAQAAAAMAAAAHAAAACAAAAAUAAAAIAAAAAQAAAAgAAAADAAAACAAAAAMAAAAJAAAAAAAAAAQAAAAEAAAABgAAAAgAAAAFAAAAAQAAAAEAAAAAAAAAAAAAAAQAAAAFAAAAAAAAAAEAAAAAAAAAAAAAAAUAAAAIAAAABgAAAAQAAAAIAAAACAAAAAkAAAAFAAAABQAAAAUAAAAJAAAACAAAAAUAAAAHAAAAAQAAAAgAAAAIAAAAAAAAAAMAAAAAAAAAAQAAAAEAAAAAAAAABAAAAAUAAAAIAAAAAAAAAAAAAAAEAAAACQAAAAUAAAAGAAAAAAAAAAgAAAAIAAAAAAAAAAQAAAAFAAAAAwAAAAkAAAAGAAAAAwAAAAkAAAABAAAACAAAAAYAAAAFAAAACAAAAAUAAAAAAAAABAAAAAcAAAAJAAAACQAAAAQAAAAAAAAAAwAAAAAAAAAAAAAABwAAAAQAAAAIAAAACAAAAAQAAAACAAAAAwAAAAQAAAAIAAAAAQAAAAMAAAAIAAAAAwAAAAEAAAADAAAAAAAAAAYAAAAJAAAABwAAAAUAAAAEAAAACAAAAAIAAAABAAAAAwAAAAAAAAAGAAAACQAAAAcAAAAFAAAABAAAAAMAAAACAAAAAQAAAAMAAAAAAAAABgAAAAIAAAAHAAAABQAAAAQAAAAIAAAAAgAAAAEAAAACAAAACQAAAAcAAAAFAAAABwAAAAEAAAACAAAAAwAAAAIAAAAIAAAACQAAAAMAAAAEAAAAAgAAAAYAAAAHAAAAAwAAAAEAAAABAAAABgAAAAAAAAAEAAAAAwAAAAMAAAABAAAAAwAAAAgAAAAFAAAABgAAAAYAAAAEAAAABgAAAAYAAAAJAAAABQAAAAUAAAAFAAAACQAAAAIAAAADAAAABwAAAAEAAAACAAAABwAAAAYAAAAIAAAAAAAAAAEAAAABAAAAAwAAAAQAAAAFAAAABgAAAAAAAAADAAAABAAAAAkAAAAFAAAABgAAAAMAAAAGAAAAAgAAAAMAAAAEAAAABQAAAAMAAAAJAAAABgAAAAMAAAAEAAAAAQAAAAcAAAAGAAAABQAAAAIAAAAFAAAAAwAAAAQAAAAHAAAACQAAAAQAAAAEAAAAAAAAAAMAAAAAAAAAAAAAAAcAAAAEAAAAAgAAAAcAAAAJAAAACAAAAAMAAAAEAAAAAgAAAAEAAAAIAAAAAgAAAAMAAAABAAAAAwAAAAAAAAAGAAAACQAAAAcAAAAFAAAABAAAAAUAAAAIAAAAAQAAAAMAAAAAAAAABgAAAAkAAAAHAAAAAQAAAAQAAAACAAAACAAAAAEAAAADAAAAAAAAAAYAAAAJAAAABwAAAAUAAAAEAAAAAwAAAAgAAAABAAAACAAAAAcAAAAHAAAABQAAAAcAAAABAAAACAAAAAgAAAAIAAAACAAAAAkAAAADAAAABAAAAAQAAAAGAAAABwAAAAMAAAABAAAAAQAAAAAAAAAAAAAABAAAAAIAAAAAAAAAAQAAAAAAAAAAAAAABQAAAAYAAAAGAAAABAAAAAYAAAAGAAAACQAAAAUAAAAFAAAABQAAAAkAAAAIAAAAAwAAAAcAAAABAAAACAAAAAcAAAAAAAAAAwAAAAAAAAABAAAAAQAAAAMAAAAEAAAABQAAAAYAAAAEAAAAAwAAAAQAAAAJAAAABQAAAAYAAAADAAAABgAAAAgAAAADAAAABAAAAAUAAAAAAAAACQAAAAYAAAADAAAACQAAAAEAAAAHAAAABgAAAAUAAAAIAAAABQAAAAMAAAAEAAAABwAAAAkAAAAJAAAABAAAAAAAAAACAAAABAAAAAAAAAAHAAAABAAAAAgAAAAHAAAACQAAAAIAAAAIAAAACQAAAAgAAAABAAAAAwAAAAgAAAADAAAAAAAAAAAAAAAGAAAACQAAAAcAAAAFAAAABAAAAAgAAAAIAAAAAQAAAAAAAAAAAAAABgAAAAkAAAAIAAAABQAAAAQAAAAIAAAACAAAAAEAAAAAAAAAAAAAAAYAAAAJAAAACAAAAAUAAAAEAAAACAAAAAgAAAABAAAACAAAAAgAAAAIAAAABQAAAAgAAAABAAAACAAAAAgAAAAIAAAAAwAAAAkAAAAGAAAABAAAAAQAAAAGAAAACAAAAAAAAAAAAAAABAAAAAgAAAAAAAAAAQAAAAAAAAAAAAAABQAAAAYAAAAGAAAABAAAAAYAAAAGAAAACQAAAAUAAAAFAAAABQAAAAkAAAAIAAAAAAAAAAgAAAABAAAACAAAAAgAAAAAAAAACAAAAAAAAAABAAAAAQAAAAAAAAAEAAAABQAAAAYAAAAAAAAAAAAAAAkAAAAFAAAABgAAAAAAAAAGAAAACAAAAAAAAAAEAAAABQAAAAgAAAAJAAAABgAAAAAAAAAJAAAAAQAAAAcAAAAGAAAABQAAAAgAAAAFAAAAAAAAAAQAAAAIAAAACQAAAAkAAAAEAAAAAAAAAAgAAAAAAAAAAAAAAAgAAAAEAAAACAAAAAgAAAAJAAAACQAAAAgAAAABAAAACAAAAAgAAAAIAAAAAQAAAAMAAAAAAAAABgAAAAkAAAAHAAAABQAAAAQAAAAEAAAABgAAAAEAAAADAAAAAAAAAAYAAAAJAAAABwAAAAUAAAAEAAAAAwAAAAgAAAABAAAAAwAAAAAAAAAGAAAACQAAAAcAAAAFAAAABAAAAAgAAAAIAAAAAQAAAAgAAAAHAAAABwAAAAUAAAAHAAAAAQAAAAgAAAAIAAAACAAAAAMAAAAJAAAAAwAAAAQAAAAEAAAABgAAAAcAAAADAAAAAQAAAAEAAAAEAAAAAwAAAAAAAAABAAAAAwAAAAAAAAAFAAAABgAAAAYAAAAEAAAABgAAAAYAAAAJAAAABQAAAAUAAAAFAAAABAAAAAgAAAADAAAABwAAAAEAAAAHAAAABwAAAAAAAAAGAAAABgAAAAEAAAABAAAAAwAAAAQAAAAFAAAABgAAAAAAAAADAAAABAAAAAkAAAAFAAAABgAAAAMAAAAEAAAACAAAAAMAAAAEAAAABQAAAAMAAAAJAAAABgAAAAMAAAAJAAAAAQAAAAcAAAAGAAAABQAAAAgAAAAFAAAAAwAAAAQAAAAHAAAACQAAAAkAAAAEAAAAAAAAAAMAAAAAAAAAAAAAAAcAAAAEAAAACAAAAAcAAAAJAAAAAAAAAAYAAAAJAAAACAAAAAEAAAADAAAACAAAAAMAAAABAAAAAgAAAAAAAAAGAAAACQAAAAcAAAAFAAAABAAAAAYAAAAIAAAAAQAAAAIAAAAAAAAABgAAAAkAAAAHAAAABQAAAAQAAAADAAAACAAAAAEAAAADAAAAAAAAAAYAAAAJAAAABwAAAAUAAAAEAAAAAwAAAAgAAAABAAAACAAAAAcAAAAHAAAABQAAAAcAAAABAAAACAAAAAcAAAAIAAAABwAAAAkAAAADAAAABAAAAAQAAAAEAAAABwAAAAMAAAABAAAAAQAAAAAAAAAAAAAABAAAAAQAAAAAAAAAAQAAAAMAAAAAAAAABQAAAAYAAAAGAAAABAAAAAYAAAAGAAAACQAAAAUAAAAFAAAABQAAAAkAAAAIAAAAAwAAAAcAAAABAAAACAAAAAcAAAAAAAAABwAAAAAAAAABAAAAAQAAAAMAAAAEAAAABQAAAAYAAAAAAAAAAwAAAAQAAAAJAAAABQAAAAYAAAADAAAABgAAAAgAAAADAAAABAAAAAUAAAADAAAACQAAAAYAAAADAAAACQAAAAEAAAAHAAAABgAAAAUAAAAIAAAABQAAAAcAAAAEAAAABwAAAAkAAAAJAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAABAAAAAgAAAAHAAAACQAAAAMAAAADAAAACQAAAAgAAAABAAAAAwAAAAgAAAADAAAAAQAAAAIAAAAAAAAABgAAAAkAAAAIAAAABQAAAAQAAAADAAAACAAAAAEAAAADAAAAAAAAAAYAAAAJAAAABwAAAAUAAAAEAAAAAwAAAAgAAAABAAAAAgAAAAYAAAAGAAAACQAAAAcAAAAFAAAABAAAAAMAAAAIAAAAAQAAAAgAAAAHAAAABwAAAAUAAAAHAAAAAQAAAAgAAAADAAAACAAAAAMAAAAJAAAAAwAAAAQAAAAEAAAABgAAAAcAAAADAAAAAQAAAAEAAAAGAAAABgAAAAQAAAADAAAABgAAAAEAAAACAAAABgAAAAUAAAAGAAAABgAAAAQAAAAGAAAABgAAAAkAAAAFAAAABQAAAAUAAAAJAAAACAAAAAMAAAAHAAAAAQAAAAgAAAAFAAAAAAAAAAMAAAAGAAAAAQAAAAEAAAACAAAABAAAAAUAAAAGAAAAAAAAAAMAAAAEAAAACQAAAAUAAAAGAAAAAwAAAAYAAAAIAAAAAwAAAAQAAAAFAAAAAwAAAAkAAAAGAAAAAwAAAAkAAAABAAAABwAAAAYAAAAFAAAACAAAAAUAAAADAAAABAAAAAcAAAAJAAAACQAAAAQAAAAIAAAAAwAAAAAAAAAAAAAACAAAAAQAAAAIAAAABwAAAAkAAAADAAAAAwAAAAkAAAAIAAAAAQAAAAMAAAABAAAAAgAAAAAAAAAGAAAACQAAAAcAAAAFAAAABAAAAAgAAAAIAAAAAQAAAAIAAAAAAAAABgAAAAkAAAAIAAAABQAAAAQAAAAIAAAACAAAAAEAAAACAAAAAAAAAAYAAAAJAAAACAAAAAUAAAAEAAAACAAAAAgAAAABAAAACAAAAAgAAAAIAAAABQAAAAgAAAABAAAACAAAAAgAAAAIAAAACAAAAAkAAAACAAAABAAAAAQAAAAGAAAACAAAAAIAAAABAAAAAQAAAAAAAAAAAAAABAAAAAIAAAAAAAAAAQAAAAIAAAAAAAAABQAAAAYAAAAGAAAABAAAAAYAAAAGAAAACQAAAAUAAAAFAAAABQAAAAkAAAAIAAAAAgAAAAgAAAABAAAACAAAAAcAAAAAAAAACAAAAAAAAAABAAAAAQAAAAIAAAAEAAAABQAAAAYAAAAAAAAAAgAAAAQAAAAJAAAABQAAAAYAAAACAAAABgAAAAgAAAACAAAABAAAAAUAAAAIAAAACQAAAAYAAAACAAAACQAAAAEAAAAIAAAABgAAAAUAAAAIAAAABQAAAAIAAAAEAAAACAAAAAkAAAAJAAAABAAAAAAAAAAIAAAAAAAAAAAAAAAHAAAABAAAAAgAAAAHAAAACQAAAAgAAAAHAAAACQAAAAYAAAABAAAABwAAAAgAAAAIAAAAAQAAAAMAAAAAAAAABgAAAAkAAAAHAAAAAgAAAAMAAAADAAAAAgAAAAEAAAADAAAABgAAAAYAAAAJAAAABwAAAAUAAAACAAAAAQAAAAMAAAAAAAAABgAAAAkAAAAHAAAABQAAAAQAAAAHAAAAAgAAAAkAAAACAAAABwAAAAcAAAAFAAAABwAAAAEAAAAHAAAAAwAAAAcAAAADAAAACQAAAAMAAAAEAAAABAAAAAMAAAAHAAAAAwAAAAEAAAABAAAAAQAAAAAAAAADAAAAAwAAAAYAAAABAAAAAwAAAAAAAAAFAAAAAwAAAAQAAAAEAAAABAAAAAMAAAAJAAAABQAAAAUAAAAFAAAAAwAAAAIAAAADAAAABwAAAAEAAAAIAAAABwAAAAYAAAADAAAAAQAAAAMAAAAEAAAABQAAAAYAAAAAAAAAAwAAAAQAAAADAAAABQAAAAYAAAADAAAABgAAAAQAAAADAAAABAAAAAUAAAADAAAACQAAAAYAAAADAAAACQAAAAEAAAAHAAAABgAAAAUAAAAGAAAABQAAAAMAAAAEAAAABwAAAAkAAAAJAAAABAAAAAAAAAAGAAAABwAAAAQAAAAGAAAABwAAAAQAAAAJAAAABwAAAAEAAAADAAAABwAAAAQAAAABAAAAAwAAAAAAAAAGAAAACQAAAAcAAAAFAAAABAAAAAYAAAAIAAAAAQAAAAMAAAAAAAAAAwAAAAkAAAAHAAAABQAAAAQAAAADAAAACAAAAAEAAAADAAAAAAAAAAcAAAAJAAAABwAAAAUAAAAEAAAAAwAAAAgAAAABAAAACAAAAAcAAAAHAAAABQAAAAcAAAABAAAACAAAAAgAAAAIAAAAAwAAAAkAAAADAAAABAAAAAQAAAAEAAAABwAAAAMAAAABAAAAAQAAAAAAAAAAAAAABAAAAAMAAAAAAAAAAQAAAAMAAAAAAAAABQAAAAMAAAADAAAABAAAAAgAAAADAAAACQAAAAUAAAAFAAAABQAAAAkAAAAIAAAAAwAAAAcAAAABAAAACAAAAAgAAAAAAAAAAwAAAAAAAAABAAAAAQAAAAMAAAAEAAAABQAAAAYAAAAAAAAAAwAAAAQAAAAJAAAABQAAAAYAAAADAAAABgAAAAgAAAADAAAABAAAAAUAAAADAAAACQAAAAcAAAADAAAACQAAAAEAAAAIAAAABgAAAAUAAAAIAAAABQAAAAMAAAAEAAAABwAAAAkAAAAJAAAABAAAAAAAAAADAAAAAAAAAAAAAAAIAAAABAAAAAgAAAAIAAAACQAAAAMAAAADAAAACQAAAAgAAAABAAAAAwAAAAgAAAAIAAAA"},"shape":[1797],"dtype":"int32","order":"little"}]]}}},"view":{"type":"object","name":"CDSView","id":"p1044","attributes":{"filter":{"type":"object","name":"AllIndices","id":"p1045"}}},"glyph":{"type":"object","name":"Scatter","id":"p1040","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"size":{"type":"value","value":8},"line_color":{"type":"field","field":"color"},"line_alpha":{"type":"value","value":0.6},"fill_color":{"type":"field","field":"color"},"fill_alpha":{"type":"value","value":0.6},"hatch_color":{"type":"field","field":"color"}}},"nonselection_glyph":{"type":"object","name":"Scatter","id":"p1041","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"size":{"type":"value","value":8},"line_color":{"type":"field","field":"color"},"line_alpha":{"type":"value","value":0.1},"fill_color":{"type":"field","field":"color"},"fill_alpha":{"type":"value","value":0.1},"hatch_color":{"type":"field","field":"color"},"hatch_alpha":{"type":"value","value":0.1}}},"muted_glyph":{"type":"object","name":"Scatter","id":"p1042","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"size":{"type":"value","value":8},"line_color":{"type":"field","field":"color"},"line_alpha":{"type":"value","value":0.2},"fill_color":{"type":"field","field":"color"},"fill_alpha":{"type":"value","value":0.2},"hatch_color":{"type":"field","field":"color"},"hatch_alpha":{"type":"value","value":0.2}}}}}],"toolbar":{"type":"object","name":"Toolbar","id":"p1010","attributes":{"tools":[{"type":"object","name":"PanTool","id":"p1023"},{"type":"object","name":"WheelZoomTool","id":"p1024","attributes":{"renderers":"auto"}},{"type":"object","name":"BoxZoomTool","id":"p1025","attributes":{"overlay":{"type":"object","name":"BoxAnnotation","id":"p1026","attributes":{"syncable":false,"level":"overlay","visible":false,"left":{"type":"number","value":"nan"},"right":{"type":"number","value":"nan"},"top":{"type":"number","value":"nan"},"bottom":{"type":"number","value":"nan"},"left_units":"canvas","right_units":"canvas","top_units":"canvas","bottom_units":"canvas","line_color":"black","line_alpha":1.0,"line_width":2,"line_dash":[4,4],"fill_color":"lightgrey","fill_alpha":0.5}}}},{"type":"object","name":"SaveTool","id":"p1031"},{"type":"object","name":"ResetTool","id":"p1032"},{"type":"object","name":"HelpTool","id":"p1033"},{"type":"object","name":"HoverTool","id":"p1048","attributes":{"renderers":[{"id":"p1043"}],"tooltips":[["Digit","@digit"],["Cluster","@cluster"]]}}]}},"left":[{"type":"object","name":"LinearAxis","id":"p1018","attributes":{"ticker":{"type":"object","name":"BasicTicker","id":"p1019","attributes":{"mantissas":[1,2,5]}},"formatter":{"type":"object","name":"BasicTickFormatter","id":"p1020"},"axis_label":"Principal Component 2","major_label_policy":{"type":"object","name":"AllLabels","id":"p1021"}}}],"below":[{"type":"object","name":"LinearAxis","id":"p1013","attributes":{"ticker":{"type":"object","name":"BasicTicker","id":"p1014","attributes":{"mantissas":[1,2,5]}},"formatter":{"type":"object","name":"BasicTickFormatter","id":"p1015"},"axis_label":"Principal Component 1","major_label_policy":{"type":"object","name":"AllLabels","id":"p1016"}}}],"center":[{"type":"object","name":"Grid","id":"p1017","attributes":{"axis":{"id":"p1013"}}},{"type":"object","name":"Grid","id":"p1022","attributes":{"dimension":1,"axis":{"id":"p1018"}}},{"type":"object","name":"Legend","id":"p1046","attributes":{"title":"Digit","label_text_font_size":"10pt","items":[{"type":"object","name":"LegendItem","id":"p1047","attributes":{"label":{"type":"field","field":"digit"},"renderers":[{"id":"p1043"}]}}]}}]}}]}};
+  const render_items = [{"docid":"0f4dfb43-8c3e-443b-b2dd-83d2f94df9a4","roots":{"p1001":"b2d73bd7-c251-454a-a26a-e2b464cc0a01"},"root_ids":["p1001"]}];
+  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
+  }
+  if (root.Bokeh !== undefined) {
+    embed_document(root);
+  } else {
+    let attempts = 0;
+    const timer = setInterval(function(root) {
+      if (root.Bokeh !== undefined) {
+        clearInterval(timer);
+        embed_document(root);
+      } else {
+        attempts++;
+        if (attempts > 100) {
+          clearInterval(timer);
+          console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
+        }
+      }
+    }, 10, root)
+  }
+})(window);</script></div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./unsupervised_learning"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-digits-dataset">Example: Digits Dataset</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By KBTU
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
